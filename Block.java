@@ -1,4 +1,4 @@
-public class Block
+public class Block implements Comparable<Block>
 {
 	private int position = 0;
 	private String coefficient = null;
@@ -38,6 +38,11 @@ public class Block
 	public Block Split()
 	{
 		return new Block();
+	}
+
+	public int compareTo(Block other)
+	{
+		return 0;
 	}
 
 	private void Add(Block other) { }

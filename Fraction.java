@@ -1,5 +1,6 @@
-public class Fraction
+public class Fraction implements Comparable<Fraction>
 {
+	// it might be better to represent this as a prime factorization
 	private int numerator = 1;
 	private int denominator = 1;
 
@@ -18,9 +19,10 @@ public class Fraction
 		numerator = num;
 		denominator = denom;
 	}
-	public Fraction(float num)
+	public Fraction(Fraction frac)
 	{
-
+		numerator = frac.Numerator();
+		denominator = frac.Denominator();
 	}
 
 	public int Numerator() { return numerator; }
@@ -28,10 +30,23 @@ public class Fraction
 	public void Numerator(int num) { numerator = num; }
 	public void Denominator(int denom) { denominator = denom; }
 
-	public void Simplify() { }
-	public void Scale(float scaleFactor)
+	public int compareTo(Fraction other)
 	{
+		if (denominator == other.Denominator())
+		{
+			return numerator - other.Numerator();
+		}
+		Fraction scaled = new Fraction(this);
+		scaled.Scale(other.Denominator());
+		other.Scale(this.Denominator());
+		return scaled.compareTo(other);
+	}
 
+	public void Simplify() { }
+	public void Scale(int scaleFactor)
+	{
+		numerator *= scaleFactor;
+		denominator *= scaleFactor;
 	}
 
 	public void Add(Fraction other)
@@ -39,6 +54,12 @@ public class Fraction
 		if (denominator == other.Denominator())
 		{
 			numerator += other.Numerator();
+		}
+		else
+		{
+			this.Scale(other.Denominator());
+			other.Scale(this.Denominator());
+			this.Add(other);
 		}
 	}
 	public void Multiply(Fraction other)
