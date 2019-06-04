@@ -30,11 +30,8 @@ public class Block implements Comparable<Block>
 	public void Position(int pos) { position = pos; }
 	public void Number(Fraction num) { number = num; }
 	public void Exponent(Fraction exp) { exponent = exp; }
+	public void Coefficient(String coeff) { coefficient = coeff; }
 
-	public void Merge(Block other)
-	{
-
-	}
 	public Block Split()
 	{
 		return new Block();
@@ -42,9 +39,37 @@ public class Block implements Comparable<Block>
 
 	public int compareTo(Block other)
 	{
-		return 0;
+		return position - other.Position();
 	}
 
-	private void Add(Block other) { }
-	private void Multiply(Block other) { }
+	public void Add(Block other)
+	{
+		int cmp = 0;
+		if (coefficient == null)
+		{
+			if (other.Coefficient() != null) { cmp = -1; }
+		}
+		else
+		{
+			cmp = coefficient.compareTo(other.Coefficient());
+		}
+
+		if (cmp == 0)
+		{
+			number.Add(other.Number());
+		}
+		else
+		{
+			System.out.println("Error: Cannot combine unlike terms");
+		}
+
+	}
+	public void Multiply(Block other) { }
+
+	public String toString()
+	{
+		String s = number.toString();
+		if (coefficient != null) { s += coefficient; }
+		return s;
+	}
 }
