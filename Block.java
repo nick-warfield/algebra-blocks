@@ -13,6 +13,7 @@ import javax.swing.JPanel;
  */
 public class Block extends JPanel{
 
+<<<<<<< HEAD
     /**
      * Creates new form Block
      */
@@ -51,4 +52,51 @@ public class Block extends JPanel{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+=======
+	public void Position(int pos) { position = pos; }
+	public void Number(Fraction num) { number = num; }
+	public void Exponent(Fraction exp) { exponent = exp; }
+	public void Coefficient(String coeff) { coefficient = coeff; }
+
+	public Block Split()
+	{
+		return new Block();
+	}
+
+	public int compareTo(Block other)
+	{
+		return position - other.Position();
+	}
+
+	public void Add(Block other)
+	{
+		int cmp = 0;
+		if (coefficient == null)
+		{
+			if (other.Coefficient() != null) { cmp = -1; }
+		}
+		else
+		{
+			cmp = coefficient.compareTo(other.Coefficient());
+		}
+
+		if (cmp == 0)
+		{
+			number.Add(other.Number());
+		}
+		else
+		{
+			System.out.println("Error: Cannot combine unlike terms");
+		}
+
+	}
+	public void Multiply(Block other) { }
+
+	public String toString()
+	{
+		String s = number.toString();
+		if (coefficient != null) { s += coefficient; }
+		return s;
+	}
+>>>>>>> fa3609895d966d46b151a8c9147fc5e162e35435
 }

@@ -67,4 +67,14 @@ public class Fraction implements Comparable<Fraction>
 		numerator *= other.Numerator();
 		denominator *= other.Denominator();
 	}
+	
+	public String toString()
+	{
+		String s = Integer.toString(numerator);
+		if (denominator != 1 && numerator != 0)
+		{
+			s += '/' + Integer.toString(denominator);
+		}
+		return s;
+	}
 }
