@@ -1,3 +1,5 @@
+import java.lang.Exception.*;
+
 public class Fraction implements Comparable<Fraction>
 {
 	// it might be better to represent this as a prime factorization
@@ -14,8 +16,9 @@ public class Fraction implements Comparable<Fraction>
 		numerator = num;
 		denominator = 1;
 	}
-	public Fraction(int num, int denom)
+	public Fraction(int num, int denom) throws ArithmeticException
 	{
+		if (denom == 0) { throw new ArithmeticException("Denominator cannot be 0"); }
 		numerator = num;
 		denominator = denom;
 	}
@@ -28,7 +31,11 @@ public class Fraction implements Comparable<Fraction>
 	public int Numerator() { return numerator; }
 	public int Denominator() { return denominator; }
 	public void Numerator(int num) { numerator = num; }
-	public void Denominator(int denom) { denominator = denom; }
+	public void Denominator(int denom) throws ArithmeticException
+	{
+		if (denom == 0) { throw new ArithmeticException("Denominator cannot be 0"); }
+		denominator = denom;
+	}
 
 	public int compareTo(Fraction other)
 	{
@@ -43,29 +50,29 @@ public class Fraction implements Comparable<Fraction>
 	}
 
 	public void Simplify() { }
-	public void Scale(int scaleFactor)
+	public Fraction Scale(int scaleFactor) throws ArithmeticException
 	{
-		numerator *= scaleFactor;
-		denominator *= scaleFactor;
+		if (scaleFactor == 0) { throw new ArithmeticException("Denominator cannot be 0"); }
+		Numerator(Numerator() * scaleFactor);
+		Denominator(Denominator() * scaleFactor);
+		return this;
 	}
 
-	public void Add(Fraction other)
+	public static Fraction Add(Fraction lhs, Fraction rhs) throws ArithmeticException
 	{
-		if (denominator == other.Denominator())
+		Fraction lTemp = lhs, rTemp = rhs;
+		if (lTemp.Denominator() != rTemp.Denominator())
 		{
-			numerator += other.Numerator();
+			lTemp.Scale(rTemp.Denominator());
+			rTemp.Scale(lTemp.Denominator());
 		}
-		else
-		{
-			this.Scale(other.Denominator());
-			other.Scale(this.Denominator());
-			this.Add(other);
-		}
+		lTemp.Numerator(lTemp.Numerator() + rTemp.Numerator());
+		return lTemp;
 	}
-	public void Multiply(Fraction other)
+
+	public static Fraction Multiply(Fraction lhs, Fraction rhs)
 	{
-		numerator *= other.Numerator();
-		denominator *= other.Denominator();
+		return new Fraction(lhs.Numerator() * rhs.Numerator(), lhs.Denominator() * rhs.Denominator());
 	}
 	
 	public String toString()
