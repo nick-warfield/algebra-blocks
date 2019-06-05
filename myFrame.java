@@ -9,9 +9,11 @@ package algebrablocks;
  *
  * @author group3
  */
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 public class myFrame extends javax.swing.JFrame {
 
@@ -22,8 +24,15 @@ public class myFrame extends javax.swing.JFrame {
      */
     public myFrame() {
         initComponents();
+       block1.initialX = block1.getX();
+       block1.initialY = block1.getY();
+       block2.initialX = block2.getX();
+       block2.initialY = block2.getY();
+       block3.initialX = block3.getX();
+       block3.initialY = block3.getY();
     }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,9 +42,6 @@ public class myFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         textField1 = new java.awt.TextField();
         textField2 = new java.awt.TextField();
@@ -43,81 +49,16 @@ public class myFrame extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
+        block1 = new algebrablocks.Block();
+        block2 = new algebrablocks.Block();
+        block3 = new algebrablocks.Block();
+        blockEqualsSign = new algebrablocks.Block();
+        jLabel1 = new javax.swing.JLabel();
+        blockOperatorSign = new algebrablocks.Block();
+        jLabelOperator = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algebra Blocks");
-
-        jPanel1.setBackground(new java.awt.Color(204, 255, 255));
-        jPanel1.setName("Block1"); // NOI18N
-        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jPanel1MouseDragged(evt);
-            }
-        });
-        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jPanel1MousePressed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        jPanel2.setBackground(new java.awt.Color(255, 204, 255));
-        jPanel2.setName("Block2"); // NOI18N
-        jPanel2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jPanel2MouseDragged(evt);
-            }
-        });
-        jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jPanel2MousePressed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 204));
-        jPanel3.setName("Block3"); // NOI18N
-        jPanel3.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jPanel3MouseDragged(evt);
-            }
-        });
-        jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jPanel3MousePressed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
 
         textField1.setText("textField1");
 
@@ -127,10 +68,167 @@ public class myFrame extends javax.swing.JFrame {
 
         jCheckBox1.setText("Add");
         jCheckBox1.setToolTipText("");
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
+            }
+        });
+        jCheckBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBox1MouseClicked(evt);
+            }
+        });
 
         jCheckBox2.setText("Multiply");
+        jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox2ItemStateChanged(evt);
+            }
+        });
+        jCheckBox2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBox2MouseClicked(evt);
+            }
+        });
 
         jCheckBox3.setText("Divide");
+        jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox3ItemStateChanged(evt);
+            }
+        });
+        jCheckBox3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBox3MouseClicked(evt);
+            }
+        });
+
+        block1.setBackground(new java.awt.Color(204, 255, 255));
+        block1.setAutoscrolls(true);
+        block1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                block1MouseDragged(evt);
+            }
+        });
+        block1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                block1MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                block1MouseReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout block1Layout = new javax.swing.GroupLayout(block1);
+        block1.setLayout(block1Layout);
+        block1Layout.setHorizontalGroup(
+            block1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        block1Layout.setVerticalGroup(
+            block1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        block2.setBackground(new java.awt.Color(255, 204, 255));
+        block2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                block2MouseDragged(evt);
+            }
+        });
+        block2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                block2MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                block2MouseReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout block2Layout = new javax.swing.GroupLayout(block2);
+        block2.setLayout(block2Layout);
+        block2Layout.setHorizontalGroup(
+            block2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        block2Layout.setVerticalGroup(
+            block2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        block3.setBackground(new java.awt.Color(255, 255, 204));
+        block3.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                block3MouseDragged(evt);
+            }
+        });
+        block3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                block3MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                block3MouseReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout block3Layout = new javax.swing.GroupLayout(block3);
+        block3.setLayout(block3Layout);
+        block3Layout.setHorizontalGroup(
+            block3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        block3Layout.setVerticalGroup(
+            block3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        blockEqualsSign.setBackground(new java.awt.Color(0, 0, 0));
+        blockEqualsSign.setToolTipText("");
+        blockEqualsSign.setOpaque(false);
+
+        jLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setText("=");
+
+        javax.swing.GroupLayout blockEqualsSignLayout = new javax.swing.GroupLayout(blockEqualsSign);
+        blockEqualsSign.setLayout(blockEqualsSignLayout);
+        blockEqualsSignLayout.setHorizontalGroup(
+            blockEqualsSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockEqualsSignLayout.createSequentialGroup()
+                .addContainerGap(32, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(27, 27, 27))
+        );
+        blockEqualsSignLayout.setVerticalGroup(
+            blockEqualsSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(blockEqualsSignLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(jLabel1)
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+
+        blockOperatorSign.setBackground(new java.awt.Color(0, 0, 0));
+        blockOperatorSign.setOpaque(false);
+
+        jLabelOperator.setBackground(new java.awt.Color(0, 0, 0));
+        jLabelOperator.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        javax.swing.GroupLayout blockOperatorSignLayout = new javax.swing.GroupLayout(blockOperatorSign);
+        blockOperatorSign.setLayout(blockOperatorSignLayout);
+        blockOperatorSignLayout.setHorizontalGroup(
+            blockOperatorSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockOperatorSignLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabelOperator, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        blockOperatorSignLayout.setVerticalGroup(
+            blockOperatorSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockOperatorSignLayout.createSequentialGroup()
+                .addContainerGap(38, Short.MAX_VALUE)
+                .addComponent(jLabelOperator, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,49 +236,55 @@ public class myFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(133, 133, 133)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(130, 130, 130)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 257, Short.MAX_VALUE)))
+                        .addGap(88, 88, 88)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jCheckBox1)
+                                .addGap(51, 51, 51)
+                                .addComponent(jCheckBox2)
+                                .addGap(47, 47, 47)
+                                .addComponent(jCheckBox3))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(137, 137, 137)
+                                .addComponent(textField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(103, 103, 103)
+                                .addComponent(textField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(88, 88, 88)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addGap(51, 51, 51)
-                        .addComponent(jCheckBox2)
-                        .addGap(47, 47, 47)
-                        .addComponent(jCheckBox3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(137, 137, 137)
-                        .addComponent(textField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(103, 103, 103)
-                        .addComponent(textField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(112, 112, 112)
+                .addComponent(block1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60)
+                .addComponent(blockOperatorSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addComponent(block2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56)
+                .addComponent(blockEqualsSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60)
+                .addComponent(block3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(95, 95, 95))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
+                .addGap(48, 48, 48)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(block1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(block2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(block3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(blockEqualsSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(blockOperatorSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox1)
                     .addComponent(jCheckBox2)
                     .addComponent(jCheckBox3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,39 +295,138 @@ public class myFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+    private void block1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MousePressed
         x = evt.getX();
         y = evt.getY();
-    }//GEN-LAST:event_jPanel1MousePressed
+    }//GEN-LAST:event_block1MousePressed
 
-    private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
-        int newX = jPanel1.getX() + evt.getX()-x;
-        int newY = jPanel1.getY() + evt.getY()-y;
-        jPanel1.setLocation(newX , newY);
-        
-    }//GEN-LAST:event_jPanel1MouseDragged
+    private void block1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MouseDragged
+        int newX = block1.getX() + evt.getX()-x;
+        int newY = block1.getY() + evt.getY()-y;
+        block1.setLocation(newX, newY);
+    }//GEN-LAST:event_block1MouseDragged
 
-    private void jPanel2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MousePressed
+    private void block2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MousePressed
         x = evt.getX();
         y = evt.getY();
-    }//GEN-LAST:event_jPanel2MousePressed
+    }//GEN-LAST:event_block2MousePressed
 
-    private void jPanel2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseDragged
-        int newX = jPanel2.getX() + evt.getX()-x;
-        int newY = jPanel2.getY() + evt.getY()-y;
-        jPanel2.setLocation(newX, newY);
-    }//GEN-LAST:event_jPanel2MouseDragged
+    private void block2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MouseDragged
+        int newX = block2.getX() + evt.getX()-x;
+        int newY = block2.getY() + evt.getY()-y;
+        block2.setLocation(newX, newY);
+    }//GEN-LAST:event_block2MouseDragged
 
-    private void jPanel3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MousePressed
+    private void block3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block3MousePressed
         x = evt.getX();
         y = evt.getY();
-    }//GEN-LAST:event_jPanel3MousePressed
+    }//GEN-LAST:event_block3MousePressed
 
-    private void jPanel3MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseDragged
-        int newX = jPanel3.getX() + evt.getX()-x;
-        int newY = jPanel3.getY() + evt.getY()-y;
-        jPanel3.setLocation(newX, newY);
-    }//GEN-LAST:event_jPanel3MouseDragged
+    private void block3MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block3MouseDragged
+        int newX = block3.getX() + evt.getX()-x;
+        int newY = block3.getY() + evt.getY()-y;
+        block3.setLocation(newX, newY);
+    }//GEN-LAST:event_block3MouseDragged
+
+    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED){
+            jLabelOperator.setText("+");
+            jCheckBox2.setSelected(false);
+            jCheckBox3.setSelected(false);
+        }
+        else if (evt.getStateChange() == 0){
+            jLabelOperator.setText(" ");
+        }
+    }//GEN-LAST:event_jCheckBox1ItemStateChanged
+
+    private void jCheckBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox2ItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED){
+            jLabelOperator.setText("x");
+            jCheckBox1.setSelected(false);
+            jCheckBox3.setSelected(false);
+        }
+        else if (evt.getStateChange() == 0){
+        jLabelOperator.setText(" ");
+        }
+    }//GEN-LAST:event_jCheckBox2ItemStateChanged
+
+    private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED){
+            jLabelOperator.setText("/");
+            jCheckBox1.setSelected(false);
+            jCheckBox2.setSelected(false);
+            
+        }
+        else if (evt.getStateChange() == 0){
+            jLabelOperator.setText(" ");
+        }
+    }//GEN-LAST:event_jCheckBox3ItemStateChanged
+
+    private void jCheckBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseClicked
+        if (!jCheckBox1.isSelected()){
+            jLabelOperator.setText(" ");
+        }
+    }//GEN-LAST:event_jCheckBox1MouseClicked
+
+    private void jCheckBox2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox2MouseClicked
+        if (!jCheckBox2.isSelected()){
+            jLabelOperator.setText(" ");
+        }
+    }//GEN-LAST:event_jCheckBox2MouseClicked
+
+    private void jCheckBox3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox3MouseClicked
+        if (!jCheckBox3.isSelected()){
+            jLabelOperator.setText(" ");
+        }
+    }//GEN-LAST:event_jCheckBox3MouseClicked
+
+    private void block1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MouseReleased
+        if (block1.getBounds().intersects(block2.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block1 and block2!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+           
+        }
+        else if (block1.getBounds().intersects(block3.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block1 and block3!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+        }
+        else {
+            block1.setLocation(block1.initialX, block1.initialY);
+            JOptionPane.showMessageDialog(null, "block1 resets when it is dragged out of its allowed boundary!");
+        }
+    }//GEN-LAST:event_block1MouseReleased
+
+    private void block2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MouseReleased
+        if (block2.getBounds().intersects(block1.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block2 and block1!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+           
+        }
+        else if (block2.getBounds().intersects(block3.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block2 and block3!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+        }
+        else {
+            block2.setLocation(block2.initialX, block2.initialY);
+            JOptionPane.showMessageDialog(null, "block2 resets when it is dragged out of its allowed boundary!");
+        }
+    }//GEN-LAST:event_block2MouseReleased
+
+    private void block3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block3MouseReleased
+        if (block3.getBounds().intersects(block2.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block3 and block2!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+           
+        }
+        else if (block3.getBounds().intersects(block1.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block3 and block1!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+        }
+        else {
+            block3.setLocation(block3.initialX, block3.initialY);
+            JOptionPane.showMessageDialog(null, "block3 resets when it is dragged out of its allowed boundary!");
+        }
+    }//GEN-LAST:event_block3MouseReleased
 
     /**
      * @param args the command line arguments
@@ -258,17 +461,21 @@ public class myFrame extends javax.swing.JFrame {
             public void run() {
                 frame = new myFrame();
                 frame.setVisible(true);
-            }
+            } 
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private algebrablocks.Block block1;
+    private algebrablocks.Block block2;
+    private algebrablocks.Block block3;
+    private algebrablocks.Block blockEqualsSign;
+    private algebrablocks.Block blockOperatorSign;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelOperator;
     private javax.swing.JSeparator jSeparator1;
     private java.awt.TextField textField1;
     private java.awt.TextField textField2;
