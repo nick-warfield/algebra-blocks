@@ -1,3 +1,5 @@
+package algebrablocks;
+
 import java.lang.Exception.*;
 
 public class Fraction implements Comparable<Fraction>
@@ -37,6 +39,7 @@ public class Fraction implements Comparable<Fraction>
 		denominator = denom;
 	}
 
+	// rewrite
 	public int compareTo(Fraction other)
 	{
 		if (denominator == other.Denominator())
@@ -49,7 +52,11 @@ public class Fraction implements Comparable<Fraction>
 		return scaled.compareTo(other);
 	}
 
-	public void Simplify() { }
+	public void Simplify()
+	{
+		
+	}
+
 	public Fraction Scale(int scaleFactor) throws ArithmeticException
 	{
 		if (scaleFactor == 0) { throw new ArithmeticException("Denominator cannot be 0"); }
