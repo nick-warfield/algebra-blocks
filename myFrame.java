@@ -13,6 +13,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 public class myFrame extends javax.swing.JFrame {
 
@@ -23,7 +24,12 @@ public class myFrame extends javax.swing.JFrame {
      */
     public myFrame() {
         initComponents();
-       
+       block1.initialX = block1.getX();
+       block1.initialY = block1.getY();
+       block2.initialX = block2.getX();
+       block2.initialY = block2.getY();
+       block3.initialX = block3.getX();
+       block3.initialY = block3.getY();
     }
 
     
@@ -48,7 +54,7 @@ public class myFrame extends javax.swing.JFrame {
         block3 = new algebrablocks.Block();
         blockEqualsSign = new algebrablocks.Block();
         jLabel1 = new javax.swing.JLabel();
-        block4 = new algebrablocks.Block();
+        blockOperatorSign = new algebrablocks.Block();
         jLabelOperator = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -98,6 +104,7 @@ public class myFrame extends javax.swing.JFrame {
         });
 
         block1.setBackground(new java.awt.Color(204, 255, 255));
+        block1.setAutoscrolls(true);
         block1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 block1MouseDragged(evt);
@@ -106,6 +113,9 @@ public class myFrame extends javax.swing.JFrame {
         block1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 block1MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                block1MouseReleased(evt);
             }
         });
 
@@ -130,6 +140,9 @@ public class myFrame extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 block2MousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                block2MouseReleased(evt);
+            }
         });
 
         javax.swing.GroupLayout block2Layout = new javax.swing.GroupLayout(block2);
@@ -152,6 +165,9 @@ public class myFrame extends javax.swing.JFrame {
         block3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 block3MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                block3MouseReleased(evt);
             }
         });
 
@@ -191,24 +207,24 @@ public class myFrame extends javax.swing.JFrame {
                 .addContainerGap(45, Short.MAX_VALUE))
         );
 
-        block4.setBackground(new java.awt.Color(0, 0, 0));
-        block4.setOpaque(false);
+        blockOperatorSign.setBackground(new java.awt.Color(0, 0, 0));
+        blockOperatorSign.setOpaque(false);
 
         jLabelOperator.setBackground(new java.awt.Color(0, 0, 0));
         jLabelOperator.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
 
-        javax.swing.GroupLayout block4Layout = new javax.swing.GroupLayout(block4);
-        block4.setLayout(block4Layout);
-        block4Layout.setHorizontalGroup(
-            block4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, block4Layout.createSequentialGroup()
+        javax.swing.GroupLayout blockOperatorSignLayout = new javax.swing.GroupLayout(blockOperatorSign);
+        blockOperatorSign.setLayout(blockOperatorSignLayout);
+        blockOperatorSignLayout.setHorizontalGroup(
+            blockOperatorSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockOperatorSignLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabelOperator, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        block4Layout.setVerticalGroup(
-            block4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, block4Layout.createSequentialGroup()
+        blockOperatorSignLayout.setVerticalGroup(
+            blockOperatorSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockOperatorSignLayout.createSequentialGroup()
                 .addContainerGap(38, Short.MAX_VALUE)
                 .addComponent(jLabelOperator, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
@@ -242,7 +258,7 @@ public class myFrame extends javax.swing.JFrame {
                 .addGap(112, 112, 112)
                 .addComponent(block1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(60, 60, 60)
-                .addComponent(block4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(blockOperatorSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addComponent(block2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
@@ -260,7 +276,7 @@ public class myFrame extends javax.swing.JFrame {
                     .addComponent(block2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(block3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(blockEqualsSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(block4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(blockOperatorSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(48, 48, 48)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
@@ -364,6 +380,54 @@ public class myFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBox3MouseClicked
 
+    private void block1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MouseReleased
+        if (block1.getBounds().intersects(block2.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block1 and block2!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+           
+        }
+        else if (block1.getBounds().intersects(block3.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block1 and block3!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+        }
+        else {
+            block1.setLocation(block1.initialX, block1.initialY);
+            JOptionPane.showMessageDialog(null, "block1 resets when it is dragged out of its allowed boundary!");
+        }
+    }//GEN-LAST:event_block1MouseReleased
+
+    private void block2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MouseReleased
+        if (block2.getBounds().intersects(block1.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block2 and block1!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+           
+        }
+        else if (block2.getBounds().intersects(block3.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block2 and block3!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+        }
+        else {
+            block2.setLocation(block2.initialX, block2.initialY);
+            JOptionPane.showMessageDialog(null, "block2 resets when it is dragged out of its allowed boundary!");
+        }
+    }//GEN-LAST:event_block2MouseReleased
+
+    private void block3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block3MouseReleased
+        if (block3.getBounds().intersects(block2.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block3 and block2!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+           
+        }
+        else if (block3.getBounds().intersects(block1.getBounds())){
+            JOptionPane.showMessageDialog(null, "merge between block3 and block1!");
+            //block1.setLocation(block1.initialX, block1.initialY);
+        }
+        else {
+            block3.setLocation(block3.initialX, block3.initialY);
+            JOptionPane.showMessageDialog(null, "block3 resets when it is dragged out of its allowed boundary!");
+        }
+    }//GEN-LAST:event_block3MouseReleased
+
     /**
      * @param args the command line arguments
      */
@@ -405,8 +469,8 @@ public class myFrame extends javax.swing.JFrame {
     private algebrablocks.Block block1;
     private algebrablocks.Block block2;
     private algebrablocks.Block block3;
-    private algebrablocks.Block block4;
     private algebrablocks.Block blockEqualsSign;
+    private algebrablocks.Block blockOperatorSign;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;

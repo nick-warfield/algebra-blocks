@@ -11,13 +11,15 @@ import javax.swing.JPanel;
  *
  * @author Jorg3
  */
-public class Block extends JPanel {
+public class Block extends JPanel{
 
     /**
      * Creates new form Block
      */
     //Variables   
     private  boolean isLeft;
+    protected int initialX;
+    protected int initialY;
    
     public Block() {
         initComponents();
@@ -29,6 +31,12 @@ public class Block extends JPanel {
     }
     protected boolean isLeft(){
         return isLeft;
+    }
+    protected int getInitialX(){
+        return initialX;
+    }
+    protected int getInitialY(){
+        return initialY;
     }
     /**
      * This method is called from within the constructor to initialize the form.

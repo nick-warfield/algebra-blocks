@@ -54,7 +54,7 @@
               <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
               <Component id="block1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-              <Component id="block4" min="-2" max="-2" attributes="0"/>
+              <Component id="blockOperatorSign" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="81" max="32767" attributes="0"/>
               <Component id="block2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
@@ -74,7 +74,7 @@
                   <Component id="block2" min="-2" max="-2" attributes="0"/>
                   <Component id="block3" min="-2" max="-2" attributes="0"/>
                   <Component id="blockEqualsSign" min="-2" max="-2" attributes="0"/>
-                  <Component id="block4" min="-2" max="-2" attributes="0"/>
+                  <Component id="blockOperatorSign" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
@@ -146,10 +146,12 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="cc" type="rgb"/>
         </Property>
+        <Property name="autoscrolls" type="boolean" value="true"/>
       </Properties>
       <Events>
         <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="block1MouseDragged"/>
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="block1MousePressed"/>
+        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="block1MouseReleased"/>
       </Events>
 
       <Layout>
@@ -174,6 +176,7 @@
       <Events>
         <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="block2MouseDragged"/>
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="block2MousePressed"/>
+        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="block2MouseReleased"/>
       </Events>
 
       <Layout>
@@ -198,6 +201,7 @@
       <Events>
         <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="block3MouseDragged"/>
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="block3MousePressed"/>
+        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="block3MouseReleased"/>
       </Events>
 
       <Layout>
@@ -256,7 +260,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="algebrablocks.Block" name="block4">
+    <Container class="algebrablocks.Block" name="blockOperatorSign">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" red="0" type="rgb"/>
