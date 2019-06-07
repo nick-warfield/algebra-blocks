@@ -1,33 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package algebrablocks;
 
 import javax.swing.JPanel;
-
-// you need to specify the classpath when you compile because this is from a downloaded library. the classpath should lead to the .jar file you downloaded
-// source: http://commons.apache.org/proper/commons-math/download_math.cgi
 import org.apache.commons.math3.fraction.Fraction;
+// source: http://commons.apache.org/proper/commons-math/download_math.cgi
+// docs : http://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/index.html
 
-/**
- *
- * @author Jorg3
- */
 public class Block extends JPanel
 {
-    /**
-     * Creates new form Block
-     */
-    //Variables   
     private boolean isLHS;
 	private Fraction num;
 	private String coeff;
 
-    protected int initialX;
-    protected int initialY;
+    private int initialX, initialY;
    
+	public Block()
+	{
+		initComponents();
+		isLHS = true;
+		num = new Fraction(1);
+		coeff = "";
+	}
     public Block(boolean IsLeftHandSide, Fraction Number) throws IllegalArgumentException
 	{
 		if (Number == null) { throw new IllegalArgumentException(); }
@@ -53,14 +45,22 @@ public class Block extends JPanel
 	}
 
     //Methods...
-    public void FlipSide() { isLHS = !isLHS; }
+    public void ChangeSide() { isLHS = !isLHS; }
     public boolean isLHS() { return isLHS; }
 
-	public Fraction Number() { return num; }
-	public String Coefficient() { return coeff; }
+	public Fraction getNumber() { return num; }
+	public String getCoefficient() { return coeff; }
     
-	public void Number(Fraction Number) { num = Number; }
-	public void Coefficient(String Coefficient) { coeff = Coefficient; }
+	public void setNumber(Fraction Number) throws IllegalArgumentException
+	{
+		if (Number == null) { throw new IllegalArgumentException(); }
+		num = Number;
+	}
+	public void setCoefficient(String Coefficient) throws IllegalArgumentException
+	{
+		if (Number == null) { throw new IllegalArgumentException(); }
+		coeff = Coefficient;
+	}
 
 	public int getInitialX() { return initialX; }
     public int getInitialY() { return initialY; }
@@ -74,13 +74,6 @@ public class Block extends JPanel
     }// </editor-fold>//GEN-END:initComponents
 
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
-
-	public Block Split()
-	{
-		return new Block(true, new Fraction(0));
-	}
 
 	public static Block Merge(Block lhs, Block rhs) throws Exception
 	{
@@ -95,10 +88,22 @@ public class Block extends JPanel
 		return Block.Add(lhs, rhs);
 	}
 
-	private static Block Add(Block lhs, Block rhs)
+	private Block Add(Block other)
 	{
-		return new Block(lhs.isLHS(), Fraction.Add(lhs.Number(), rhs.Number()),
-				lhs.Coefficient());
+		if (other == null) { throw new IllegalArgumentException(); }
+		if (isLHS() != other.isLHS())
+		{
+			throw new IllegalArgumentException(
+					"Can only add blocks on the same side");
+		}
+		if (getCoefficient() != other.getCoefficient())
+		{
+			throw new ArithmeticException("Cannot combine unlike terms");
+		}
+
+		Block blk = new Block(this);
+		blk.setNumber(blk.getNumber().add(other.getNumber()));
+		return blk;
 	}
 	public void Multiply(Block other) { }
 
