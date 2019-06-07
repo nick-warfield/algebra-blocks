@@ -74,21 +74,7 @@ public class Block extends JPanel
     }// </editor-fold>//GEN-END:initComponents
 
 
-
-	public static Block Merge(Block lhs, Block rhs) throws Exception
-	{
-		if (lhs.Coefficient() != rhs.Coefficient())
-		{
-			throw new ArithmeticException("Cannot combine unlike terms");
-		}
-		if (lhs.isLHS() != rhs.isLHS())
-		{
-			throw new IllegalArgumentException("Can only merge blocks on the same side");
-		}
-		return Block.Add(lhs, rhs);
-	}
-
-	private Block Add(Block other)
+	public Block add(Block other)
 	{
 		if (other == null) { throw new IllegalArgumentException(); }
 		if (isLHS() != other.isLHS())
@@ -105,7 +91,19 @@ public class Block extends JPanel
 		blk.setNumber(blk.getNumber().add(other.getNumber()));
 		return blk;
 	}
-	public void Multiply(Block other) { }
+	public void multiply(Block other)
+	{
+		if (other == null) { throw new IllegalArgumentException(); }
+		if (isLHS() != other.isLHS())
+		{
+			throw new IllegalArgumentException(
+					"Can only multiply blocks on the same side");
+		}
+		Block blk = new Block(this);
+		blk.setNumber(blk.getNumber().multiply(other.getNumber()));
+		blk.setCoefficient(blk.getCoefficient() + other.getCoefficient());
+		return blk;
+	}
 
 	public String toString()
 	{
