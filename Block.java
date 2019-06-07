@@ -6,7 +6,10 @@
 package algebrablocks;
 
 import javax.swing.JPanel;
-import algebrablocks.Fraction;
+
+// you need to specify the classpath when you compile because this is from a downloaded library. the classpath should lead to the .jar file you downloaded
+// source: http://commons.apache.org/proper/commons-math/download_math.cgi
+import org.apache.commons.math3.fraction.Fraction;
 
 /**
  *

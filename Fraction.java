@@ -59,19 +59,16 @@ public class Fraction implements Comparable<Fraction>
 
 	public Fraction Scale(int scaleFactor) throws ArithmeticException
 	{
-		if (scaleFactor == 0) { throw new ArithmeticException("Denominator cannot be 0"); }
-		Numerator(Numerator() * scaleFactor);
-		Denominator(Denominator() * scaleFactor);
-		return this;
+		return new Fraction(Numerator() * scaleFactor, Denominator() * scaleFactor);
 	}
 
-	public static Fraction Add(Fraction lhs, Fraction rhs) throws ArithmeticException
+	public static Fraction Add(Fraction lhs, Fraction rhs)
 	{
 		Fraction lTemp = lhs, rTemp = rhs;
 		if (lTemp.Denominator() != rTemp.Denominator())
 		{
-			lTemp.Scale(rTemp.Denominator());
-			rTemp.Scale(lTemp.Denominator());
+			lTemp = lTemp.Scale(rTemp.Denominator());
+			rTemp = rTemp.Scale(lTemp.Denominator());
 		}
 		lTemp.Numerator(lTemp.Numerator() + rTemp.Numerator());
 		return lTemp;
