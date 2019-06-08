@@ -1,5 +1,46 @@
-import java.util.Vector;
+package algebrablocks;
 
+import java.util.Vector;
+import algebrablocks.Block;
+import algebrablocks.Quantity;
+
+public class Equation
+{
+	private Quantity root;
+
+	public Equation()
+	{
+		root = new Quantity();
+		root.setLeft(new Quantity());
+		root.setRight(new Quantity());
+		root.setRule(RULES.EQUAL);
+	}
+	public Equation(String problem)
+	{
+		root = new Quantity();
+		root.setLeft(new Quantity());
+		root.setRight(new Quantity());
+		root.setRule(RULES.EQUAL);
+
+		// do this later, make some assumptions to get it up fast
+	}
+
+	public void CreateBlock(Block blk, int xPos)
+	{
+		createBlk(blk, root, xPos);
+	}
+	private void createBlk(Block blk, Quantity qnt, int xPos)
+	{
+		if (qnt.getBlock() != null)
+		{
+			if (qnt.getBlock().getX() - xPos 
+		}
+		createBlk(blk, qnt.getLeft(), xPos);
+		createBlk(blk, qnt.getRight(), xPos);
+	}
+}
+
+/*
 public class Equation
 {
 	private Vector<Block> blocks;
@@ -25,7 +66,7 @@ public class Equation
 		{
 			if (start * end < 0)
 			{
-				b.Number().Multiply(new Fraction(-1));
+				b.getNumber().multiply(new Fraction(-1));
 			}
 			b.Position(end);
 		}
@@ -71,3 +112,4 @@ public class Equation
 		return s;
 	}
 }
+*/

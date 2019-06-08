@@ -40,8 +40,8 @@ public class Block extends JPanel
 	{
 		initComponents();
 		isLHS = blk.isLHS();
-		num = blk.Number();
-		coeff = blk.Coefficient();
+		num = blk.getNumber();
+		coeff = blk.getCoefficient();
 	}
 
     //Methods...
@@ -58,7 +58,7 @@ public class Block extends JPanel
 	}
 	public void setCoefficient(String Coefficient) throws IllegalArgumentException
 	{
-		if (Number == null) { throw new IllegalArgumentException(); }
+		if (Coefficient == null) { throw new IllegalArgumentException(); }
 		coeff = Coefficient;
 	}
 
@@ -91,7 +91,7 @@ public class Block extends JPanel
 		blk.setNumber(blk.getNumber().add(other.getNumber()));
 		return blk;
 	}
-	public void multiply(Block other)
+	public Block multiply(Block other)
 	{
 		if (other == null) { throw new IllegalArgumentException(); }
 		if (isLHS() != other.isLHS())
