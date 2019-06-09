@@ -15,15 +15,16 @@ public class Equation
 		root.setRight(new Quantity());
 		root.setRule(RULES.EQUAL);
 	}
-	public Equation(String problem)
-	{
-		root = new Quantity();
-		root.setLeft(new Quantity());
-		root.setRight(new Quantity());
-		root.setRule(RULES.EQUAL);
 
-		// do this later, make some assumptions to get it up fast
-	}
+// do this later, make some assumptions to get it up fast
+//	public Equation(String problem)
+//	{
+//		root = new Quantity();
+//		root.setLeft(new Quantity());
+//		root.setRight(new Quantity());
+//		root.setRule(RULES.EQUAL);
+//
+//	}
 
 	public void CreateBlock(Block blk, int xPos)
 	{
