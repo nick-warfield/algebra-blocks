@@ -1,25 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package algebrablocks;
 
-/**
- *
- * @author Jorg3
- */
-import javax.swing.*;
-public class App {
+import javax.swing.JFrame;
+import java.awt.Color;
+import algebrablocks.*;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        myFrame frame = new myFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocation(500, 300);
-        frame.setVisible(true);
-    }
-    
+public class App
+{
+	public static void main(String[] params)
+	{
+		JFrame jeff = makeFrame();
+	}
+
+	private static JFrame makeFrame()
+	{
+		JFrame jeff = new JFrame("Algebra Blocks!");
+		jeff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jeff.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		jeff.setUndecorated(true);
+		jeff.setResizable(false);
+
+		Block blk = new Block();
+		blk.setLocation(720, 480);
+		blk.setBackground(Color.BLUE);
+		blk.setVisible(true);
+
+		jeff.getContentPane().add(new Block());
+
+		jeff.setVisible(true);
+		return jeff;
+	}
 }
