@@ -1,8 +1,10 @@
 package algebrablocks;
 
-import javax.swing.JFrame;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import algebrablocks.*;
+
+import org.apache.commons.math3.fraction.Fraction;
 
 public class App
 {
@@ -19,13 +21,25 @@ public class App
 		jeff.setUndecorated(true);
 		jeff.setResizable(false);
 
-		Block blk = new Block();
-		blk.setLocation(720, 480);
-		blk.setBackground(Color.BLUE);
-		blk.setVisible(true);
+		JPanel contentPane = new JPanel();
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 
-		jeff.getContentPane().add(new Block());
+		AdditionQuantity a1 = new AdditionQuantity();
+		a1.insert(new Block(new Fraction(1), "x"));
+		a1.insert(new Block(new Fraction(8)));
 
+		AdditionQuantity a2 = new AdditionQuantity();
+		a2.insert(new Block(new Fraction(15)));
+
+		EqualQuantity eq = new EqualQuantity(a1, a2);
+
+		JPanel mainPane = new JPanel(new BorderLayout());
+		mainPane.setEnabled(true);
+		mainPane.add(eq, BorderLayout.CENTER);
+		eq.Place();
+
+		jeff.setContentPane(mainPane);
+		jeff.setEnabled(true);
 		jeff.setVisible(true);
 		return jeff;
 	}

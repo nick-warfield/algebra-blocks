@@ -1,6 +1,7 @@
 package algebrablocks;
 
 import java.util.Vector;
+import javax.swing.JLabel;
 import algebrablocks.Quantity;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -8,8 +9,21 @@ public class AdditionQuantity extends Quantity
 {
 	public AdditionQuantity()
 	{
+		super();
 		blocks = new Vector<Block>();
 		subQuantities = new Vector<Quantity>();
+	}
+
+	public final void Place()
+	{
+		removeAll();
+
+		add(blocks.get(0));
+		for (int i = 1; i < blocks.size(); i++)
+		{
+			add(new JLabel(" + "));
+			add(blocks.get(i));
+		}
 	}
 
 	protected final void merge(Block dest, Block src)
@@ -18,7 +32,7 @@ public class AdditionQuantity extends Quantity
 		{
 			throw new ArithmeticException("Cannot combine unlike terms");
 		}
-		dest.setNumber(dest.getNumber().add(src.getNumber()));
+		dest.setCoefficient(dest.getCoefficient().add(src.getCoefficient()));
 		blocks.remove(src);
 	}
 	

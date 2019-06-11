@@ -1,12 +1,23 @@
 package algebrablocks;
 
 import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 import algebrablocks.Block;
 
-public abstract class Quantity
+public abstract class Quantity extends JPanel
 {
 	protected Vector<Block> blocks;
 	protected Vector<Quantity> subQuantities;
+
+	public Quantity()
+	{
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setEnabled(true);
+		setVisible(true);
+	}
+	
+	public abstract void Place();
 
 	public final void Merge(Block destination, Block source)
 			throws IllegalArgumentException
@@ -62,8 +73,8 @@ public abstract class Quantity
 		return subQuantities.contains(qnt);
 	}
 
-	public final void add(Block blk) { blocks.add(blk); }
-	public final void add(Quantity qnt) { subQuantities.add(qnt); }
-	public final void remove(Block blk) { blocks.remove(blk); }
-	public final void remove(Quantity qnt) { subQuantities.remove(qnt); }
+	public final void insert(Block blk) { blocks.add(blk); }
+	public final void insert(Quantity qnt) { subQuantities.add(qnt); }
+	public final void delete(Block blk) { blocks.remove(blk); }
+	public final void delete(Quantity qnt) { subQuantities.remove(qnt); }
 }
