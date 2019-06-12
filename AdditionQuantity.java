@@ -18,12 +18,17 @@ public class AdditionQuantity extends Quantity
 	{
 		removeAll();
 
+		Block blk = new Block();
+		blk.Parent(this);
+		add(new Block(blk));
+
 		add(blocks.get(0));
 		for (int i = 1; i < blocks.size(); i++)
 		{
 			add(new JLabel(" + "));
 			add(blocks.get(i));
 		}
+		add(new Block(blk));
 	}
 
 	protected final void merge(Block dest, Block src)

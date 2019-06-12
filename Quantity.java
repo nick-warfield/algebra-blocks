@@ -1,5 +1,6 @@
 package algebrablocks;
 
+import javax.swing.border.LineBorder;
 import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
@@ -7,6 +8,7 @@ import algebrablocks.Block;
 
 public abstract class Quantity extends JPanel
 {
+	protected Quantity parent;
 	protected Vector<Block> blocks;
 	protected Vector<Quantity> subQuantities;
 
@@ -22,6 +24,8 @@ public abstract class Quantity extends JPanel
 	public final void Merge(Block destination, Block source)
 			throws IllegalArgumentException
 	{
+		destination.setBorder(new LineBorder(destination.getBackground()));
+		source.setBorder(new LineBorder(source.getBackground()));
 		if (!blocks.contains(destination) || !blocks.contains(source))
 		{
 			throw new IllegalArgumentException("Can only Merge contained blocks");
@@ -33,6 +37,7 @@ public abstract class Quantity extends JPanel
 	public final void Promote(Block blk, Quantity source)
 			throws IllegalArgumentException
 	{
+		blk.setBorder(new LineBorder(blk.getBackground()));
 		if (!subQuantities.contains(source))
 		{
 			throw new IllegalArgumentException("Can only Promote from " +
@@ -50,6 +55,7 @@ public abstract class Quantity extends JPanel
 	public final void Demote(Block blk, Quantity destination)
 			throws IllegalArgumentException
 	{
+		blk.setBorder(new LineBorder(blk.getBackground()));
 		if (!subQuantities.contains(destination))
 		{
 			throw new IllegalArgumentException("Can only Demote demote " +
@@ -73,8 +79,10 @@ public abstract class Quantity extends JPanel
 		return subQuantities.contains(qnt);
 	}
 
-	public final void insert(Block blk) { blocks.add(blk); }
-	public final void insert(Quantity qnt) { subQuantities.add(qnt); }
+	public final void Parent(Quantity qnt) { parent = qnt; }
+	public final Quantity Parent() { return parent; }
+	public final void insert(Block blk) { blk.Parent(this); blocks.add(blk); }
+	public final void insert(Quantity qnt) { qnt.Parent(this); subQuantities.add(qnt); }
 	public final void delete(Block blk) { blocks.remove(blk); }
 	public final void delete(Quantity qnt) { subQuantities.remove(qnt); }
 }

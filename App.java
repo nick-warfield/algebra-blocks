@@ -8,10 +8,18 @@ import org.apache.commons.math3.fraction.Fraction;
 
 public class App
 {
+	private static Block selected = null;
+	public static void Select(Block blk) { selected = blk; }
+	public static Block Selected() { return selected; }
+
+	private static Quantity root;
+	public static Quantity getRoot() { return root; }
+
 	public static void main(String[] params)
 	{
 		JFrame jeff = makeFrame();
 	}
+
 
 	private static JFrame makeFrame()
 	{
@@ -31,12 +39,12 @@ public class App
 		AdditionQuantity a2 = new AdditionQuantity();
 		a2.insert(new Block(new Fraction(15)));
 
-		EqualQuantity eq = new EqualQuantity(a1, a2);
+		root = new EqualQuantity(a1, a2);
 
 		JPanel mainPane = new JPanel(new BorderLayout());
 		mainPane.setEnabled(true);
-		mainPane.add(eq, BorderLayout.CENTER);
-		eq.Place();
+		mainPane.add(root, BorderLayout.CENTER);
+		root.Place();
 
 		jeff.setContentPane(mainPane);
 		jeff.setEnabled(true);
