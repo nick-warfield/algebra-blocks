@@ -18,12 +18,15 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class myFrame extends javax.swing.JFrame {
 
     private int x, y;
     private int operation = 0; // 0 for empty, 1 for add, 2 for multiply and 3 for division.
-    
+    private int operation2 = 0; // 0 for empty, 1 for add, 2 for multiply and 3 for division.
+    int variable = 0;
+
     /**
      * Creates new form myFrame
      */
@@ -41,6 +44,10 @@ public class myFrame extends javax.swing.JFrame {
         block2.initialColor = block2.getBackground();
         block3.initialColor = block3.getBackground();
         block4.initialColor = block4.getBackground();
+        block1.setIsLeft(true);
+        block2.setIsLeft(true);
+        block3.setIsLeft(false);
+        block4.setIsLeft(false);
         //block4.setVisible(false);
         textFieldB1.addFocusListener(new FocusListener() {
             @Override
@@ -81,20 +88,95 @@ public class myFrame extends javax.swing.JFrame {
                 }
             }
         });
+        //textFieldB3.setVisible(false); // makes the text field invisible. The input is handled by an input message box;
+        textFieldB3.setEnabled(false);
     }
 
     /**
      * ***method to check if the drag drop on top of a block is valid****
      */
-    public boolean isValid(JLabel top, JLabel bottom) {
-        int t, b;
+    public void reset() {
+        variable = 0;
+        operation = 0;
+        operation2 = 0;
+        jLabelOperator.setText(" ");
+        jLabelOperator2.setText(" ");
+        block1.setBackground(block1.initialColor);
+        block2.setBackground(block2.initialColor);
+        block3.setBackground(block3.initialColor);
+        jLabelB1.setText("Block1");
+        jLabelB2.setText("Block2");
+        jLabelB3.setText("Block3");
+        jLabelB4.setText("Block4");
+        jCheckBoxAdd.setSelected(false);
+        jCheckBoxMultiply.setSelected(false);
+        jCheckBoxDivide.setSelected(false);
+        textFieldB1.setText("Block1");
+        textFieldB2.setText("Block2");
+        textFieldB3.setText("Block3");
+        block1.setVisible(true);
+        block2.setVisible(true);
+        block3.setVisible(true);
+        block4.setVisible(false);
+        jCheckBoxAdd.setEnabled(true);
+        jCheckBoxMultiply.setEnabled(true);
+        jCheckBoxDivide.setEnabled(true);
+        textFieldB1.setEnabled(true);
+        textFieldB2.setEnabled(true);
+        textFieldB3.setEnabled(false);
+        jButtonEnter.setEnabled(true);
+    }
+
+    public boolean isValidInput(String[] arr) {
+        int b1 = 0;
+        int b2 = 1;
+        int b3 = 2;
+        int num;
+        String sNum;
         boolean valid = true;
-        try {                                       //checks for integers
-            t = Integer.parseInt(top.getText());
-            b = Integer.parseInt(bottom.getText());
-        } catch (NumberFormatException e) {
+
+        if (variable == 0) {
+            try {                                       // checks for integers
+                num = Integer.parseInt(arr[b1].toString());
+
+            } catch (NumberFormatException e) {
+                char[] inputB1 = arr[b1].toCharArray();
+                for (int i = 0; i < inputB1.length; i++) {
+                    try {
+                        sNum = Character.toString(inputB1[i]);
+                        num = Integer.parseInt(sNum);
+                    } catch (NumberFormatException ex) {
+                        variable++;
+                    }
+                }
+            }
+            try {                                       // checks for integers
+                b2 = Integer.parseInt(arr[b2].toString());
+            } catch (NumberFormatException e) {
+                char[] inputB2 = arr[b2].toCharArray();
+                for (int i = 0; i < inputB2.length; i++) {
+                    try {
+                        sNum = Character.toString(inputB2[i]);
+                        num = Integer.parseInt(sNum);
+                    } catch (NumberFormatException ex) {
+                        variable++;
+                    }
+                }
+            }
+        } else if (variable == 1) {
+            try {
+                num = Integer.parseInt(arr[b3].toString());
+            } catch (NumberFormatException e) {
+                valid = false;
+            }
+        }
+
+        if (variable == 1) {
+            valid = true;
+        } else if (variable > 1) {
             valid = false;
         }
+
         return valid;
     }
 
@@ -120,7 +202,7 @@ public class myFrame extends javax.swing.JFrame {
         block3 = new algebrablocks.Block();
         jLabelB3 = new javax.swing.JLabel();
         blockEqualsSign = new algebrablocks.Block();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelEqualSign = new javax.swing.JLabel();
         blockOperatorSign = new algebrablocks.Block();
         jLabelOperator = new javax.swing.JLabel();
         blockOperatorSign2 = new algebrablocks.Block();
@@ -128,7 +210,7 @@ public class myFrame extends javax.swing.JFrame {
         block4 = new algebrablocks.Block();
         jLabelB4 = new javax.swing.JLabel();
         jCheckBoxDivide = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
+        jButtonEnter = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -194,6 +276,7 @@ public class myFrame extends javax.swing.JFrame {
         });
 
         jLabelB1.setFont(new java.awt.Font("Tahoma", 0, 33)); // NOI18N
+        jLabelB1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelB1.setText("Block1");
 
         javax.swing.GroupLayout block1Layout = new javax.swing.GroupLayout(block1);
@@ -228,6 +311,7 @@ public class myFrame extends javax.swing.JFrame {
         });
 
         jLabelB2.setFont(new java.awt.Font("Tahoma", 0, 33)); // NOI18N
+        jLabelB2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelB2.setText("Block2");
 
         javax.swing.GroupLayout block2Layout = new javax.swing.GroupLayout(block2);
@@ -262,6 +346,7 @@ public class myFrame extends javax.swing.JFrame {
         });
 
         jLabelB3.setFont(new java.awt.Font("Tahoma", 0, 33)); // NOI18N
+        jLabelB3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelB3.setText("Block3");
 
         javax.swing.GroupLayout block3Layout = new javax.swing.GroupLayout(block3);
@@ -282,25 +367,25 @@ public class myFrame extends javax.swing.JFrame {
         blockEqualsSign.setToolTipText("");
         blockEqualsSign.setOpaque(false);
 
-        jLabel1.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("=");
-        jLabel1.setMaximumSize(new java.awt.Dimension(111, 29));
-        jLabel1.setMinimumSize(new java.awt.Dimension(111, 29));
-        jLabel1.setPreferredSize(new java.awt.Dimension(111, 29));
+        jLabelEqualSign.setBackground(new java.awt.Color(0, 0, 0));
+        jLabelEqualSign.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabelEqualSign.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelEqualSign.setText("=");
+        jLabelEqualSign.setMaximumSize(new java.awt.Dimension(111, 29));
+        jLabelEqualSign.setMinimumSize(new java.awt.Dimension(111, 29));
+        jLabelEqualSign.setPreferredSize(new java.awt.Dimension(111, 29));
 
         javax.swing.GroupLayout blockEqualsSignLayout = new javax.swing.GroupLayout(blockEqualsSign);
         blockEqualsSign.setLayout(blockEqualsSignLayout);
         blockEqualsSignLayout.setHorizontalGroup(
             blockEqualsSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabelEqualSign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         blockEqualsSignLayout.setVerticalGroup(
             blockEqualsSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockEqualsSignLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabelEqualSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(42, 42, 42))
         );
 
@@ -369,6 +454,7 @@ public class myFrame extends javax.swing.JFrame {
         });
 
         jLabelB4.setFont(new java.awt.Font("Tahoma", 0, 33)); // NOI18N
+        jLabelB4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelB4.setText("Block4");
 
         javax.swing.GroupLayout block4Layout = new javax.swing.GroupLayout(block4);
@@ -398,8 +484,13 @@ public class myFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton1.setText("Enter");
+        jButtonEnter.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButtonEnter.setText("Enter");
+        jButtonEnter.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonEnterMouseClicked(evt);
+            }
+        });
 
         jButtonReset.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButtonReset.setText("Reset");
@@ -443,7 +534,7 @@ public class myFrame extends javax.swing.JFrame {
                                 .addGap(23, 23, 23)
                                 .addComponent(textFieldB3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(132, 132, 132)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButtonEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(40, 40, 40)
                                 .addComponent(jButtonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
@@ -481,7 +572,7 @@ public class myFrame extends javax.swing.JFrame {
                         .addGap(52, 52, 52))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButtonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(40, 40, 40))))
         );
@@ -680,23 +771,56 @@ public class myFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBoxDivideMouseClicked
 
     private void jButtonResetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonResetMouseClicked
-        operation = 0;
-        jLabelOperator.setText(" ");
-        jLabelOperator2.setText(" ");
-        block1.setBackground(block1.initialColor);
-        block2.setBackground(block2.initialColor);
-        block3.setBackground(block3.initialColor);
-        jCheckBoxAdd.setSelected(false);
-        jCheckBoxMultiply.setSelected(false);
-        jCheckBoxDivide.setSelected(false);
-        textFieldB1.setText("Block1");
-        textFieldB2.setText("Block2");
-        textFieldB3.setText("Block3");
-        block1.setVisible(true);
-        block2.setVisible(true);
-        block3.setVisible(true);
-        block4.setVisible(false);
+        reset();
     }//GEN-LAST:event_jButtonResetMouseClicked
+
+    private void jButtonEnterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonEnterMouseClicked
+        int b1 = 0;
+        int b2 = 1;
+        int b3 = 2;
+        String textB3 = "";
+        boolean goodToGo = false;
+        String[] textFieldArr = new String[3];
+        textFieldArr[b1] = textFieldB1.getText();
+        textFieldArr[b2] = textFieldB2.getText();
+        //textFieldArr[b3] = textFieldB3.getText();
+        if (variable == 0) {
+            goodToGo = isValidInput(textFieldArr);
+            if (goodToGo) {
+                if (variable == 1) {
+                    //textB3 = JOptionPane.showInputDialog(null, "Please enter a value for Block3.");
+                    textB3 = JOptionPane.showInputDialog("test box");
+                    //textFieldB3.setEnabled(true);
+                    textFieldB3.setText(textB3);
+                    textFieldArr[b3] = textFieldB3.getText();
+                    goodToGo = isValidInput(textFieldArr);
+                    jLabelB1.setText(textFieldB1.getText());
+                    jLabelB2.setText(textFieldB2.getText());
+                    jLabelB3.setText(textB3);
+                } else if (variable == 0) {
+                    jLabelB1.setText(textFieldB1.getText());
+                    jLabelB2.setText(textFieldB2.getText());
+                    //jLabelB3.setText();                   /***********add() function needed****************/
+                }
+            } else {
+                reset();
+                JOptionPane.showMessageDialog(null, "invalid user input, please try again.");
+            }
+
+        }
+        if (goodToGo) {
+            jCheckBoxAdd.setEnabled(false);
+            jCheckBoxMultiply.setEnabled(false);
+            jCheckBoxDivide.setEnabled(false);
+            textFieldB1.setEnabled(false);
+            textFieldB2.setEnabled(false);
+            textFieldB3.setEnabled(false);
+            jButtonEnter.setEnabled(false);
+
+        }
+
+        
+    }//GEN-LAST:event_jButtonEnterMouseClicked
 
     /**
      * @param args the command line arguments
@@ -744,16 +868,16 @@ public class myFrame extends javax.swing.JFrame {
     private algebrablocks.Block blockEqualsSign;
     private algebrablocks.Block blockOperatorSign;
     private algebrablocks.Block blockOperatorSign2;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonEnter;
     private javax.swing.JButton jButtonReset;
     private javax.swing.JCheckBox jCheckBoxAdd;
     private javax.swing.JCheckBox jCheckBoxDivide;
     private javax.swing.JCheckBox jCheckBoxMultiply;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelB1;
     private javax.swing.JLabel jLabelB2;
     private javax.swing.JLabel jLabelB3;
     private javax.swing.JLabel jLabelB4;
+    private javax.swing.JLabel jLabelEqualSign;
     private javax.swing.JLabel jLabelOperator;
     private javax.swing.JLabel jLabelOperator2;
     private javax.swing.JSeparator jSeparator1;
