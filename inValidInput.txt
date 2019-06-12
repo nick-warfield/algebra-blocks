@@ -1,0 +1,52 @@
+public boolean isValidInput(String[] arr) {
+        int b1 = 0;
+        int b2 = 1;
+        int b3 = 2;
+        int num;
+        String sNum;
+        boolean valid = true;
+
+        if (variable == 0) {
+            try {                                       // checks for integers
+                num = Integer.parseInt(arr[b1].toString());
+
+            } catch (NumberFormatException e) {
+                char[] inputB1 = arr[b1].toCharArray();
+                for (int i = 0; i < inputB1.length; i++) {
+                    try {
+                        sNum = Character.toString(inputB1[i]);
+                        num = Integer.parseInt(sNum);
+                    } catch (NumberFormatException ex) {
+                        variable++;
+                    }
+                }
+            }
+            try {                                       // checks for integers
+                b2 = Integer.parseInt(arr[b2].toString());
+            } catch (NumberFormatException e) {
+                char[] inputB2 = arr[b2].toCharArray();
+                for (int i = 0; i < inputB2.length; i++) {
+                    try {
+                        sNum = Character.toString(inputB2[i]);
+                        num = Integer.parseInt(sNum);
+                    } catch (NumberFormatException ex) {
+                        variable++;
+                    }
+                }
+            }
+        } else if (variable == 1) {
+            try {
+                num = Integer.parseInt(arr[b3].toString());
+            } catch (NumberFormatException e) {
+                valid = false;
+            }
+        }
+
+        if (variable == 1) {
+            valid = true;
+        } else if (variable > 1) {
+            valid = false;
+        }
+
+        return valid;
+    }

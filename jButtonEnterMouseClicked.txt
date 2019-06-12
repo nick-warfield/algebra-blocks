@@ -1,0 +1,40 @@
+ private void jButtonEnterMouseClicked(java.awt.event.MouseEvent evt) {                                          
+        int b1 = 0;
+        int b2 = 1;
+        int b3 = 2;
+        String textB3 = "";
+        boolean goodToGo = false;
+        String[] textFieldArr = new String[3];
+        textFieldArr[b1] = textFieldB1.getText();
+        textFieldArr[b2] = textFieldB2.getText();
+        //textFieldArr[b3] = textFieldB3.getText();
+        if (variable == 0) {
+            goodToGo = isValidInput(textFieldArr);
+           
+            if (goodToGo) {
+                if (variable == 1) {
+                    //textB3 = JOptionPane.showInputDialog(null, "Please enter a value for Block3.");
+                    textB3 = JOptionPane.showInputDialog("test box");
+                    //textFieldB3.setEnabled(true);
+                    textFieldB3.setText(textB3);
+                    textFieldArr[b3] = textFieldB3.getText();
+                    goodToGo = isValidInput(textFieldArr);
+                    jLabelB1.setText(textFieldB1.getText());
+                    jLabelB2.setText(textFieldB2.getText());
+                    jLabelB3.setText(textB3);
+                } else if (variable == 0) {
+                    jLabelB1.setText(textFieldB1.getText());
+                    jLabelB2.setText(textFieldB2.getText());
+                    //jLabelB3.setText();                   /***********add() function needed****************/
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "invalid user input, please try again.");
+            }
+
+        }
+        /*else if (variable == 1) {
+            goodToGo = isValidInput(textFieldArr);
+        }*/
+
+
+    }  
