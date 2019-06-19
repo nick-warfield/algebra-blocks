@@ -25,13 +25,19 @@ public class myFrame extends javax.swing.JFrame {
     private int x, y;
     private int operation = 0; // 0 for empty, 1 for add, 2 for multiply and 3 for division.
     private int operation2 = 0; // 0 for empty, 1 for add, 2 for multiply and 3 for division.
-    int variable = 0;
+    int variable = 0;           // Counts the number of variables in the user input.
+    boolean operationChecked = false; // It lets us know when an operation check box is checked.
+    boolean isFraction;     // It lets us know if user input has a fraction.
+    private int aFrac = 0; // Counter to see if / was entered twice in block 1.
+    private int bFrac = 0; // Counter to see if / was entered twice in block 2.
+    private int cFrac = 0; // Counter to see if / was entered twice in block 3.
 
     /**
      * Creates new form myFrame
      */
     public myFrame() {
         initComponents();
+        isFraction = false;
         block1.initialX = block1.getX();
         block1.initialY = block1.getY();
         block2.initialX = block2.getX();
@@ -95,10 +101,54 @@ public class myFrame extends javax.swing.JFrame {
     /**
      * ***method to check if the drag drop on top of a block is valid****
      */
+    public static String[] splitNum(String nAndD) {
+        String[] nd = nAndD.split("/", 2);
+        return nd;
+    }
+
+    public static String fraction() {
+        String value = "";
+        return value;
+    }
+
+    public static int add(String sNum1, String sNum2) {
+        int value = 0;
+        int num1 = 0;
+        int num2 = 0;
+        num1 = Integer.parseInt(sNum1);
+        num2 = Integer.parseInt(sNum2);
+        value = num1 + num2;
+        return value;
+    }
+
+    public static int multiply(String sNum1, String sNum2) {
+        int value = 0;
+        int num1 = 0;
+        int num2 = 0;
+        num1 = Integer.parseInt(sNum1);
+        num2 = Integer.parseInt(sNum2);
+        value = num1 * num2;
+        return value;
+    }
+
+    public static String divide(String sNum1, String sNum2) {
+        String value = "";
+        String deNum = sNum1;
+        String nuNum = sNum2;
+        //boolean isDeci2 = false;
+        value = deNum + "/" + nuNum;
+        return value;
+    }
+
     public void reset() {
+        aFrac = 0;
+        bFrac = 0;
+        cFrac = 0;
+        isFraction = false;
         variable = 0;
         operation = 0;
         operation2 = 0;
+        operationChecked = false;
         jLabelOperator.setText(" ");
         jLabelOperator2.setText(" ");
         block1.setBackground(block1.initialColor);
@@ -147,8 +197,28 @@ public class myFrame extends javax.swing.JFrame {
                         num = Integer.parseInt(sNum);
                     } catch (NumberFormatException ex) {
                         variable++;
+                        if (inputB1[i] == '/') {
+                            aFrac++;
+                            variable--;
+                        }
+
                     }
                 }
+                if (variable > 1) {
+                    valid = false;
+                } else {
+                    if (aFrac > 1) {
+                        valid = false;
+                    } else if (aFrac == 1) {
+                        String[] nd = splitNum(textFieldB1.getText());
+                        int numerator = 0;
+                        int denominator = 1;
+                        block1.setNumerator(Integer.parseInt(nd[numerator]));
+                        block1.setDenominator(Integer.parseInt(nd[denominator]));
+                        block1.setIsFrac(true);
+                    }
+                }
+
             }
             try {                                       // checks for integers
                 b2 = Integer.parseInt(arr[b2].toString());
@@ -160,21 +230,60 @@ public class myFrame extends javax.swing.JFrame {
                         num = Integer.parseInt(sNum);
                     } catch (NumberFormatException ex) {
                         variable++;
+                        if (inputB2[i] == '/') {
+                            bFrac++;
+                            variable--;
+                        }
                     }
                 }
+                if (variable > 1) {
+                    valid = false;
+                } else {
+                    if (bFrac > 1) {
+                        valid = false;
+                    } else if (bFrac == 1) {
+                        String[] nd = splitNum(textFieldB2.getText());
+                        int numerator = 0;
+                        int denominator = 1;
+                        block2.setNumerator(Integer.parseInt(nd[numerator]));
+                        block2.setDenominator(Integer.parseInt(nd[denominator]));
+                        block2.setIsFrac(true);
+                    }
+                }
+
             }
         } else if (variable == 1) {
             try {
                 num = Integer.parseInt(arr[b3].toString());
             } catch (NumberFormatException e) {
-                valid = false;
+                //variable++;
+                char [] cNum = textFieldB3.getText().toCharArray();
+                for (int i = 0; i < textFieldB3.getText().length(); i++) {
+                    if (cNum[i] == '/') {
+                        cFrac++;
+                       if (cNum[0] == '/' || cNum[cNum.length-1] == '/') {
+                           valid = false;
+                           cFrac++;
+                           break;
+                       }
+                    }
+                }
+                if (cFrac > 1) {
+                    valid = false;
+                }
+                else {
+                    valid = true;
+                }
+                
             }
         }
 
-        if (variable == 1) {
-            valid = true;
+        if (variable == 1 && cFrac > 1) {
+            valid = false;
         } else if (variable > 1) {
             valid = false;
+        } else if (variable == 1) {
+            valid = true;
         }
 
         return valid;
@@ -625,9 +734,11 @@ public class myFrame extends javax.swing.JFrame {
             jCheckBoxMultiply.setSelected(false);
             jCheckBoxDivide.setSelected(false);
             operation = 1;
+            operationChecked = true;
         } else if (evt.getStateChange() == 0) {
             jLabelOperator.setText(" ");
             operation = 0;
+            operationChecked = false;
         }
     }//GEN-LAST:event_jCheckBoxAddItemStateChanged
 
@@ -637,9 +748,11 @@ public class myFrame extends javax.swing.JFrame {
             jCheckBoxAdd.setSelected(false);
             jCheckBoxDivide.setSelected(false);
             operation = 2;
+            operationChecked = true;
         } else if (evt.getStateChange() == 0) {
             jLabelOperator.setText(" ");
             operation = 0;
+            operationChecked = false;
         }
     }//GEN-LAST:event_jCheckBoxMultiplyItemStateChanged
 
@@ -757,9 +870,11 @@ public class myFrame extends javax.swing.JFrame {
             jCheckBoxAdd.setSelected(false);
             jCheckBoxMultiply.setSelected(false);
             operation = 3;
+            operationChecked = true;
         } else if (evt.getStateChange() == 0) {
             jLabelOperator.setText(" ");
             operation = 0;
+            operationChecked = false;
         }
     }//GEN-LAST:event_jCheckBoxDivideItemStateChanged
 
@@ -783,43 +898,66 @@ public class myFrame extends javax.swing.JFrame {
         String[] textFieldArr = new String[3];
         textFieldArr[b1] = textFieldB1.getText();
         textFieldArr[b2] = textFieldB2.getText();
-        //textFieldArr[b3] = textFieldB3.getText();
-        if (variable == 0) {
-            goodToGo = isValidInput(textFieldArr);
-            if (goodToGo) {
-                if (variable == 1) {
-                    //textB3 = JOptionPane.showInputDialog(null, "Please enter a value for Block3.");
-                    textB3 = JOptionPane.showInputDialog("test box");
-                    //textFieldB3.setEnabled(true);
-                    textFieldB3.setText(textB3);
-                    textFieldArr[b3] = textFieldB3.getText();
-                    goodToGo = isValidInput(textFieldArr);
-                    jLabelB1.setText(textFieldB1.getText());
-                    jLabelB2.setText(textFieldB2.getText());
-                    jLabelB3.setText(textB3);
-                } else if (variable == 0) {
-                    jLabelB1.setText(textFieldB1.getText());
-                    jLabelB2.setText(textFieldB2.getText());
-                    //jLabelB3.setText();                   /***********add() function needed****************/
+        if (operationChecked) {
+            if (variable == 0) {
+                goodToGo = isValidInput(textFieldArr);
+                if (goodToGo) {
+                    if (variable == 1) {
+                        //textB3 = JOptionPane.showInputDialog(null, "Please enter a value for Block3.");
+                        textB3 = JOptionPane.showInputDialog("test box");
+                        //textFieldB3.setEnabled(true);
+                        textFieldB3.setText(textB3);
+                        textFieldArr[b3] = textFieldB3.getText();
+                        goodToGo = isValidInput(textFieldArr);
+                        if (goodToGo) {
+                            jLabelB1.setText(textFieldB1.getText());
+                            jLabelB2.setText(textFieldB2.getText());
+                            jLabelB3.setText(textB3);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Invalid input, please try agaoin.");
+                            reset();
+                        }
+                               /********************need to include code for fraction and no variable************************/
+                    } else if (variable == 0 && jCheckBoxAdd.isSelected()) {    // This is for Addition
+                        jLabelB1.setText(textFieldB1.getText());
+                        jLabelB2.setText(textFieldB2.getText());
+                        int intB3 = add(textFieldB1.getText(), textFieldB2.getText());
+                        jLabelB3.setText(Integer.toString(intB3));  // Int to String
+                    } else if (variable == 0 && jCheckBoxMultiply.isSelected()) {   // 
+                        jLabelB1.setText(textFieldB1.getText());
+                        jLabelB2.setText(textFieldB2.getText());
+                        int intB3 = multiply(textFieldB1.getText(), textFieldB2.getText());
+                        jLabelB3.setText(Integer.toString(intB3));  // In to String
+                    } else if (variable == 0 && jCheckBoxDivide.isSelected()) {
+                        jLabelB1.setText(textFieldB1.getText());
+                        jLabelB2.setText(textFieldB2.getText());
+                        String StrB3 = divide(textFieldB1.getText(), textFieldB2.getText());
+                        jLabelB3.setText(StrB3);
+                        block3.setNumerator(Integer.parseInt(textFieldB1.getText()));
+                        block3.setDenominator(Integer.parseInt(textFieldB2.getText()));
+                        block3.setIsFrac(true);
+                    }
+
+                } else {
+                    reset();
+                    JOptionPane.showMessageDialog(null, "invalid user input, please try again.");
                 }
-            } else {
-                reset();
-                JOptionPane.showMessageDialog(null, "invalid user input, please try again.");
             }
+            if (goodToGo) {
+                jCheckBoxAdd.setEnabled(false);
+                jCheckBoxMultiply.setEnabled(false);
+                jCheckBoxDivide.setEnabled(false);
+                textFieldB1.setEnabled(false);
+                textFieldB2.setEnabled(false);
+                textFieldB3.setEnabled(false);
+                jButtonEnter.setEnabled(false);
 
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please check an operation box!");
         }
-        if (goodToGo) {
-            jCheckBoxAdd.setEnabled(false);
-            jCheckBoxMultiply.setEnabled(false);
-            jCheckBoxDivide.setEnabled(false);
-            textFieldB1.setEnabled(false);
-            textFieldB2.setEnabled(false);
-            textFieldB3.setEnabled(false);
-            jButtonEnter.setEnabled(false);
 
-        }
 
-        
     }//GEN-LAST:event_jButtonEnterMouseClicked
 
     /**

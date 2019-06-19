@@ -22,12 +22,19 @@ public class Block extends JPanel{
     protected int initialX;
     protected int initialY;
     protected java.awt.Color initialColor;
+    protected int numerator;
+    protected int denominator;
+    protected boolean isFrac;
    
     public Block() {
         initComponents();
+        isFrac = false;
     }
 
     //Methods...
+    protected void setIsFrac(boolean frac) {
+        this.isFrac = frac;
+    }
     protected void setIsLeft(boolean par){
         this.isLeft = par;
     }
@@ -39,6 +46,18 @@ public class Block extends JPanel{
     }
     protected int getInitialY(){
         return initialY;
+    }
+    protected void setNumerator(int num) {
+        this.numerator = num;
+    }
+    protected void setDenominator(int denum) {
+        this.denominator = denum;
+    }
+    protected int getNumerator() {
+        return numerator;
+    }
+    protected int getDenominator() {
+        return denominator;
     }
     /**
      * This method is called from within the constructor to initialize the form.
