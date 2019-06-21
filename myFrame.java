@@ -19,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.FractionFormat;
 
 public class myFrame extends javax.swing.JFrame {
 
@@ -36,6 +38,7 @@ public class myFrame extends javax.swing.JFrame {
      * Creates new form myFrame
      */
     public myFrame() {
+
         initComponents();
         isFraction = false;
         block1.initialX = block1.getX();
@@ -101,6 +104,31 @@ public class myFrame extends javax.swing.JFrame {
     /**
      * ***method to check if the drag drop on top of a block is valid****
      */
+    public static String myFraction(Block one, Block two, String operation) {
+        Fraction fracOne = new Fraction(one.numerator, one.denominator);
+        Fraction fracTwo = new Fraction(two.numerator, two.denominator);
+        Fraction fracAnswer;
+        FractionFormat format = new FractionFormat();
+        String value = "";
+
+        switch (operation) {
+            case "add":
+                fracAnswer = fracOne.add(fracTwo);
+                value = format.format(fracAnswer);
+                break;
+            case "muiltiply":
+                fracAnswer = fracOne.multiply(fracTwo);
+                value = format.format(fracAnswer);
+                break;
+            case "divide":
+                fracAnswer = fracOne.divide(fracTwo);
+                value = format.format(fracAnswer);
+                break;
+        }
+
+        return value;
+    }
+
     public static String[] splitNum(String nAndD) {
         String[] nd = nAndD.split("/", 2);
         return nd;
@@ -131,15 +159,14 @@ public class myFrame extends javax.swing.JFrame {
         return value;
     }
 
-    public static String divide(String sNum1, String sNum2) {
+    /* public static String divide(String sNum1, String sNum2) {
         String value = "";
         String deNum = sNum1;
         String nuNum = sNum2;
         //boolean isDeci2 = false;
         value = deNum + "/" + nuNum;
         return value;
-    }
-
+    }*/
     public void reset() {
         aFrac = 0;
         bFrac = 0;
@@ -175,6 +202,10 @@ public class myFrame extends javax.swing.JFrame {
         textFieldB2.setEnabled(true);
         textFieldB3.setEnabled(false);
         jButtonEnter.setEnabled(true);
+        block1.setIsFrac(false);
+        block2.setIsFrac(false);
+        block3.setIsFrac(false);
+        block4.setIsFrac(false);
     }
 
     public boolean isValidInput(String[] arr) {
@@ -216,6 +247,7 @@ public class myFrame extends javax.swing.JFrame {
                         block1.setNumerator(Integer.parseInt(nd[numerator]));
                         block1.setDenominator(Integer.parseInt(nd[denominator]));
                         block1.setIsFrac(true);
+                        isFraction = true;
                     }
                 }
 
@@ -241,13 +273,14 @@ public class myFrame extends javax.swing.JFrame {
                 } else {
                     if (bFrac > 1) {
                         valid = false;
-                    } else if (bFrac == 1) {
+                    } else if (bFrac == 1 && aFrac == 1 || bFrac == 1 && aFrac < 1) {
                         String[] nd = splitNum(textFieldB2.getText());
                         int numerator = 0;
                         int denominator = 1;
                         block2.setNumerator(Integer.parseInt(nd[numerator]));
                         block2.setDenominator(Integer.parseInt(nd[denominator]));
                         block2.setIsFrac(true);
+                        isFraction = true;
                     }
                 }
 
@@ -257,24 +290,23 @@ public class myFrame extends javax.swing.JFrame {
                 num = Integer.parseInt(arr[b3].toString());
             } catch (NumberFormatException e) {
                 //variable++;
-                char [] cNum = textFieldB3.getText().toCharArray();
+                char[] cNum = textFieldB3.getText().toCharArray();
                 for (int i = 0; i < textFieldB3.getText().length(); i++) {
                     if (cNum[i] == '/') {
                         cFrac++;
-                       if (cNum[0] == '/' || cNum[cNum.length-1] == '/') {
-                           valid = false;
-                           cFrac++;
-                           break;
-                       }
+                        if (cNum[0] == '/' || cNum[cNum.length - 1] == '/') {
+                            valid = false;
+                            cFrac++;
+                            break;
+                        }
                     }
                 }
                 if (cFrac > 1) {
                     valid = false;
-                }
-                else {
+                } else {
                     valid = true;
                 }
-                
+
             }
         }
 
@@ -917,25 +949,119 @@ public class myFrame extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(null, "Invalid input, please try agaoin.");
                             reset();
                         }
-                               /********************need to include code for fraction and no variable************************/
+                        /**
+                         * ******************need to include code for fraction
+                         * and no variable***********************
+                         */
                     } else if (variable == 0 && jCheckBoxAdd.isSelected()) {    // This is for Addition
-                        jLabelB1.setText(textFieldB1.getText());
-                        jLabelB2.setText(textFieldB2.getText());
-                        int intB3 = add(textFieldB1.getText(), textFieldB2.getText());
-                        jLabelB3.setText(Integer.toString(intB3));  // Int to String
+                        if (isFraction) {
+                            if (block1.isFrac == true && block2.isFrac == true) {
+                                Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                Fraction result = first.add(two);
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            } else if (block1.isFrac == true && block2.isFrac == false) {
+                                Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                Fraction result = first.add(Integer.parseInt(textFieldB2.getText()));
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            } else if (block1.isFrac == false && block2.isFrac == true) {
+                                Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                Fraction result = two.add(Integer.parseInt(textFieldB1.getText()));
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            }
+                        } else {
+                            jLabelB1.setText(textFieldB1.getText());
+                            jLabelB2.setText(textFieldB2.getText());
+                            int intB3 = add(textFieldB1.getText(), textFieldB2.getText());
+                            jLabelB3.setText(Integer.toString(intB3));  // Int to String 
+                        }
+
                     } else if (variable == 0 && jCheckBoxMultiply.isSelected()) {   // 
-                        jLabelB1.setText(textFieldB1.getText());
-                        jLabelB2.setText(textFieldB2.getText());
-                        int intB3 = multiply(textFieldB1.getText(), textFieldB2.getText());
-                        jLabelB3.setText(Integer.toString(intB3));  // In to String
+                        if (isFraction) {
+                            if (block1.isFrac == true && block2.isFrac == true) {
+                                Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                Fraction result = first.multiply(two);
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            } else if (block1.isFrac == true && block2.isFrac == false) {
+                                Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                Fraction result = first.multiply(Integer.parseInt(textFieldB2.getText()));
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            } else if (block1.isFrac == false && block2.isFrac == true) {
+                                Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                Fraction result = two.multiply(Integer.parseInt(textFieldB1.getText()));
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            }
+                        } else {
+                            jLabelB1.setText(textFieldB1.getText());
+                            jLabelB2.setText(textFieldB2.getText());
+                            int intB3 = multiply(textFieldB1.getText(), textFieldB2.getText());
+                            jLabelB3.setText(Integer.toString(intB3));  // In to String
+                        }
+
                     } else if (variable == 0 && jCheckBoxDivide.isSelected()) {
-                        jLabelB1.setText(textFieldB1.getText());
-                        jLabelB2.setText(textFieldB2.getText());
-                        String StrB3 = divide(textFieldB1.getText(), textFieldB2.getText());
-                        jLabelB3.setText(StrB3);
-                        block3.setNumerator(Integer.parseInt(textFieldB1.getText()));
-                        block3.setDenominator(Integer.parseInt(textFieldB2.getText()));
-                        block3.setIsFrac(true);
+                        if (isFraction) {
+                            if (block1.isFrac == true && block2.isFrac == true) {
+                                Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                Fraction result = first.divide(two);
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            } else if (block1.isFrac == true && block2.isFrac == false) {
+                                Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                Fraction result = first.divide(Integer.parseInt(textFieldB2.getText()));
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            } else if (block1.isFrac == false && block2.isFrac == true) {
+                                Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                Fraction one = new Fraction(Integer.parseInt(textFieldB1.getText()), 1);
+                                Fraction result = one.divide(two);
+                                FractionFormat theFormat = new FractionFormat();
+                                String value = theFormat.format(result);
+                                jLabelB1.setText(textFieldB1.getText());
+                                jLabelB2.setText(textFieldB2.getText());
+                                jLabelB3.setText(value);
+                            }
+                        } else {
+                            Fraction divide = new Fraction(Integer.parseInt(textFieldB1.getText()), Integer.parseInt(textFieldB2.getText()));
+                            FractionFormat div = new FractionFormat();
+                            jLabelB1.setText(textFieldB1.getText());
+                            jLabelB2.setText(textFieldB2.getText());
+                            jLabelB3.setText(div.format(divide));
+                            block3.setNumerator(Integer.parseInt(textFieldB1.getText()));
+                            block3.setDenominator(Integer.parseInt(textFieldB2.getText()));
+                            block3.setIsFrac(true);
+                        }
                     }
 
                 } else {
