@@ -22,16 +22,71 @@ public class Block extends JPanel{
     protected int initialX;
     protected int initialY;
     protected java.awt.Color initialColor;
+    protected int myValue;
     protected int numerator;
     protected int denominator;
     protected boolean isFrac;
+    protected int blockNum;
+    protected int myPosition;
+    protected int tempX;
+    protected int tempY;
+    protected boolean imAVariable;
+    protected String myVariableValue;
+    
    
     public Block() {
         initComponents();
         isFrac = false;
+        imAVariable = false;
+        myVariableValue = "";
     }
 
     //Methods...
+    protected void setMyVariableValue(String val) {
+        this.myVariableValue = val;
+    }
+    protected String getMyVariableValue() {
+        return myVariableValue;
+    }
+    protected void setImAVariable(boolean par){
+        imAVariable = par;
+    }
+    protected boolean getImAVariable(){
+        return imAVariable;
+    }
+    protected int getMyValue() {
+        return myValue;
+    }
+    protected void setMyValue(int val) {
+        this.myValue = val;
+    }
+    protected void setTempX (int newX) {
+        this.tempX = newX;
+    }
+    protected void setTempY (int newY) {
+        this.tempY = newY;
+    }
+    protected int getTempX() {
+        return tempX;
+    }
+    protected int getTempY() {
+        return tempY;
+    }
+    protected int getMyPosition() {
+        return myPosition;
+    }
+    protected void setMyPosition(int pos) {
+        this.myPosition = pos;
+    }
+    protected int getBlockNum() {
+        return blockNum;
+    }
+    protected void setBlockNum (int myNum) {
+        this.blockNum = myNum;
+    }
+    protected boolean getIsFrac() {
+        return isFrac;
+    }
     protected void setIsFrac(boolean frac) {
         this.isFrac = frac;
     }

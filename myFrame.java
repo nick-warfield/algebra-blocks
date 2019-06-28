@@ -33,6 +33,16 @@ public class myFrame extends javax.swing.JFrame {
     private int aFrac = 0; // Counter to see if / was entered twice in block 1.
     private int bFrac = 0; // Counter to see if / was entered twice in block 2.
     private int cFrac = 0; // Counter to see if / was entered twice in block 3.
+    private int one = 1;
+    private int two = 2;
+    private int three = 3;
+    private int four = 4;
+    private static int positionOne = 20;
+    private static int positionTwo = 278;
+    private static int positionThree = 536;
+    private static int positionFour = 794;
+    private static int positionY = 48;
+    private boolean validMove = false;
 
     /**
      * Creates new form myFrame
@@ -40,6 +50,22 @@ public class myFrame extends javax.swing.JFrame {
     public myFrame() {
 
         initComponents();
+        block1.setTempX(positionOne);
+        block1.setTempY(positionY);
+        block2.setTempX(positionTwo);
+        block2.setTempY(positionY);
+        block3.setTempX(positionThree);
+        block3.setTempY(positionY);
+        block4.setTempX(positionFour);
+        block4.setTempY(positionY);
+        block1.setMyPosition(positionOne);
+        block2.setMyPosition(positionTwo);
+        block3.setMyPosition(positionThree);
+        block4.setMyPosition(positionFour);
+        block1.setBlockNum(one);
+        block2.setBlockNum(two);
+        block3.setBlockNum(three);
+        block4.setBlockNum(four);
         isFraction = false;
         block1.initialX = block1.getX();
         block1.initialY = block1.getY();
@@ -57,7 +83,8 @@ public class myFrame extends javax.swing.JFrame {
         block2.setIsLeft(true);
         block3.setIsLeft(false);
         block4.setIsLeft(false);
-        //block4.setVisible(false);
+        block4.setVisible(false);
+        block4.setEnabled(false);
         textFieldB1.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -104,6 +131,82 @@ public class myFrame extends javax.swing.JFrame {
     /**
      * ***method to check if the drag drop on top of a block is valid****
      */
+    public void move() {
+       
+    }
+    public boolean isValidMove(Block first, Block second, int tp, int btm) {
+        boolean valid = false;
+        int top = tp;
+        int bottom = btm;
+        if (first.isLeft() == second.isLeft()) {
+            if (first.getIsFrac() != second.getIsFrac()) {
+                valid = false;
+            } else {
+                valid = true;
+            }
+        } else if (first.isLeft() != second.isLeft()) {
+            if (!block4.isEnabled() || !block3.isEnabled()) {
+                if (top == 3) {
+                    valid = false;
+                } else {
+                    valid = true;
+                }
+
+            } else if (!block1.isEnabled() || !block2.isEnabled()) {
+                if (top == 2) {
+                    valid = false;
+                } else {
+                    valid = true;
+                }
+            }
+        }
+        return valid;
+    }
+
+    public static void swap(Block blockOne, Block blockTwo) {
+        //int tempX = blockOne.getInitialX();
+        //int tempY = blockOne.getInitialY();
+        //blockOne.setLocation(blockTwo.getInitialX(), blockTwo.getInitialY());
+        //blockTwo.setLocation(tempX, tempY);
+        if (blockOne.getMyPosition() == positionOne) {
+            blockOne.setLocation(positionTwo, positionY);
+            blockOne.setMyPosition(positionTwo);
+            blockOne.setTempX(positionTwo);
+            blockOne.setTempY(positionY);
+            blockTwo.setLocation(positionOne, positionY);
+            blockTwo.setMyPosition(positionOne);
+            blockTwo.setTempX(positionOne);
+            blockTwo.setTempY(positionY);
+        } else if (blockOne.getMyPosition() == positionTwo) {
+            blockOne.setLocation(positionOne, positionY);
+            blockOne.setMyPosition(positionOne);
+            blockOne.setTempX(positionOne);
+            blockOne.setTempY(positionY);
+            blockTwo.setLocation(positionTwo, positionY);
+            blockTwo.setMyPosition(positionTwo);
+            blockTwo.setTempX(positionTwo);
+            blockTwo.setTempY(positionY);
+        } else if (blockOne.getMyPosition() == positionThree) {
+            blockOne.setLocation(positionFour, positionY);
+            blockOne.setMyPosition(positionFour);
+            blockOne.setTempX(positionFour);
+            blockOne.setTempY(positionY);
+            blockTwo.setLocation(positionThree, positionY);
+            blockTwo.setMyPosition(positionThree);
+            blockTwo.setTempX(positionThree);
+            blockTwo.setTempY(positionY);
+        } else if (blockOne.getMyPosition() == positionFour) {
+            blockOne.setLocation(positionThree, positionY);
+            blockOne.setMyPosition(positionThree);
+            blockOne.setTempX(positionThree);
+            blockOne.setTempY(positionY);
+            blockTwo.setLocation(positionFour, positionY);
+            blockTwo.setMyPosition(positionFour);
+            blockTwo.setTempX(positionFour);
+            blockTwo.setTempY(positionY);
+        }
+    }
+
     public static String myFraction(Block one, Block two, String operation) {
         Fraction fracOne = new Fraction(one.numerator, one.denominator);
         Fraction fracTwo = new Fraction(two.numerator, two.denominator);
@@ -168,6 +271,15 @@ public class myFrame extends javax.swing.JFrame {
         return value;
     }*/
     public void reset() {
+        block1.setMyVariableValue("");
+        block2.setMyVariableValue("");
+        block3.setMyVariableValue("");
+        block4.setMyVariableValue("");
+        block1.setImAVariable(false);
+        block2.setImAVariable(false);
+        block3.setImAVariable(false);
+        block4.setImAVariable(false);
+        validMove = false;
         aFrac = 0;
         bFrac = 0;
         cFrac = 0;
@@ -195,6 +307,10 @@ public class myFrame extends javax.swing.JFrame {
         block2.setVisible(true);
         block3.setVisible(true);
         block4.setVisible(false);
+        block1.setEnabled(true);
+        block2.setEnabled(true);
+        block3.setEnabled(true);
+        block4.setEnabled(false);
         jCheckBoxAdd.setEnabled(true);
         jCheckBoxMultiply.setEnabled(true);
         jCheckBoxDivide.setEnabled(true);
@@ -206,6 +322,10 @@ public class myFrame extends javax.swing.JFrame {
         block2.setIsFrac(false);
         block3.setIsFrac(false);
         block4.setIsFrac(false);
+        block1.setLocation(positionOne, positionY);
+        block2.setLocation(positionTwo, positionY);
+        block3.setLocation(positionThree, positionY);
+        block4.setLocation(positionFour, positionY);
     }
 
     public boolean isValidInput(String[] arr) {
@@ -213,12 +333,16 @@ public class myFrame extends javax.swing.JFrame {
         int b2 = 1;
         int b3 = 2;
         int num;
+        int coefficient = 0; // checks to see if there are coefficients
         String sNum;
         boolean valid = true;
 
         if (variable == 0) {
             try {                                       // checks for integers
                 num = Integer.parseInt(arr[b1].toString());
+                if (num == (int) num) {
+                    block1.setMyValue(num);
+                }
 
             } catch (NumberFormatException e) {
                 char[] inputB1 = arr[b1].toCharArray();
@@ -226,6 +350,7 @@ public class myFrame extends javax.swing.JFrame {
                     try {
                         sNum = Character.toString(inputB1[i]);
                         num = Integer.parseInt(sNum);
+                        coefficient++;
                     } catch (NumberFormatException ex) {
                         variable++;
                         if (inputB1[i] == '/') {
@@ -240,7 +365,7 @@ public class myFrame extends javax.swing.JFrame {
                 } else {
                     if (aFrac > 1) {
                         valid = false;
-                    } else if (aFrac == 1) {
+                    } else if (aFrac == 1 && variable < 1) {
                         String[] nd = splitNum(textFieldB1.getText());
                         int numerator = 0;
                         int denominator = 1;
@@ -248,18 +373,32 @@ public class myFrame extends javax.swing.JFrame {
                         block1.setDenominator(Integer.parseInt(nd[denominator]));
                         block1.setIsFrac(true);
                         isFraction = true;
+                    } else {
+                        valid = false;
                     }
+                    if (coefficient == 0) {
+                        block1.setImAVariable(true);
+                        block1.setMyVariableValue(textFieldB1.getText());
+                    }
+                    else {
+                        valid = false;
+                    }
+                    
                 }
 
             }
             try {                                       // checks for integers
-                b2 = Integer.parseInt(arr[b2].toString());
+                num = Integer.parseInt(arr[b2].toString());
+                if (num == (int) num) {
+                    block2.setMyValue(num);
+                }
             } catch (NumberFormatException e) {
                 char[] inputB2 = arr[b2].toCharArray();
                 for (int i = 0; i < inputB2.length; i++) {
                     try {
                         sNum = Character.toString(inputB2[i]);
                         num = Integer.parseInt(sNum);
+                        coefficient++;
                     } catch (NumberFormatException ex) {
                         variable++;
                         if (inputB2[i] == '/') {
@@ -273,7 +412,7 @@ public class myFrame extends javax.swing.JFrame {
                 } else {
                     if (bFrac > 1) {
                         valid = false;
-                    } else if (bFrac == 1 && aFrac == 1 || bFrac == 1 && aFrac < 1) {
+                    } else if (bFrac == 1 && aFrac == 1 && variable < 1 || bFrac == 1 && aFrac < 1 && variable < 1) {
                         String[] nd = splitNum(textFieldB2.getText());
                         int numerator = 0;
                         int denominator = 1;
@@ -281,13 +420,26 @@ public class myFrame extends javax.swing.JFrame {
                         block2.setDenominator(Integer.parseInt(nd[denominator]));
                         block2.setIsFrac(true);
                         isFraction = true;
+                    } else {
+                        valid = false;
                     }
+                    if (coefficient == 0) {
+                        block2.setImAVariable(true);
+                        block2.setMyVariableValue(textFieldB2.getText());
+                    }
+                    else {
+                        valid = false;
+                    }
+                    
                 }
 
             }
         } else if (variable == 1) {
             try {
                 num = Integer.parseInt(arr[b3].toString());
+                if (num == (int) num) {
+                    block3.setMyValue(num);
+                }
             } catch (NumberFormatException e) {
                 //variable++;
                 char[] cNum = textFieldB3.getText().toCharArray();
@@ -310,11 +462,11 @@ public class myFrame extends javax.swing.JFrame {
             }
         }
 
-        if (variable == 1 && cFrac > 1) {
+        if (variable == 1 && cFrac > 1 || coefficient > 0) {
             valid = false;
         } else if (variable > 1) {
             valid = false;
-        } else if (variable == 1) {
+        } else if (variable == 1 && aFrac < 1 && bFrac < 1 && coefficient == 0) {
             valid = true;
         }
 
@@ -805,16 +957,16 @@ public class myFrame extends javax.swing.JFrame {
     private void block1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block1.getBounds().intersects(block2.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block1 and block2!");
-                //block1.setLocation(block1.initialX, block1.initialY);
-
+                swap(block1, block2);
+                //JOptionPane.showMessageDialog(null, "merge between block1 and block2!"); for testing
             } else if (block1.getBounds().intersects(block3.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block1 and block3!");
-                //block1.setLocation(block1.initialX, block1.initialY);
+                validMove = isValidMove(block1, block3, block1.getBlockNum(), block3.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block1 and block3!"); for testing
             } else if (block1.getBounds().intersects(block4.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block1 and block4!");
+                validMove = isValidMove(block1, block4, block1.getBlockNum(), block4.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block1 and block4!"); for testing
             } else {
-                block1.setLocation(block1.initialX, block1.initialY);
+                block1.setLocation(block1.getTempX(), block1.getTempY());
                 JOptionPane.showMessageDialog(null, "block1 resets when it is dragged out of its allowed boundary!");
             }
         } else {
@@ -826,16 +978,16 @@ public class myFrame extends javax.swing.JFrame {
     private void block2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block2.getBounds().intersects(block1.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block2 and block1!");
-                //block1.setLocation(block1.initialX, block1.initialY);
-
+                swap(block2, block1);
+                //JOptionPane.showMessageDialog(null, "merge between block2 and block1!"); for testing
             } else if (block2.getBounds().intersects(block3.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block2 and block3!");
-                //block1.setLocation(block1.initialX, block1.initialY);
+                validMove = isValidMove(block2, block3, block2.getBlockNum(), block3.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block2 and block3!"); for testing
             } else if (block2.getBounds().intersects(block4.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block2 and block4!");
+                validMove = isValidMove(block2, block4, block2.getBlockNum(), block4.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block2 and block4!"); for testing
             } else {
-                block2.setLocation(block2.initialX, block2.initialY);
+                block2.setLocation(block2.getTempX(), block2.getTempY());
                 JOptionPane.showMessageDialog(null, "block2 resets when it is dragged out of its allowed boundary!");
             }
         } else {
@@ -847,16 +999,16 @@ public class myFrame extends javax.swing.JFrame {
     private void block3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block3MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block3.getBounds().intersects(block2.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block3 and block2!");
-                //block1.setLocation(block1.initialX, block1.initialY);
-
+                validMove = isValidMove(block3, block2, block3.getBlockNum(), block2.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block3 and block2!"); for testing
             } else if (block3.getBounds().intersects(block1.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block3 and block1!");
-                //block1.setLocation(block1.initialX, block1.initialY);
+                validMove = isValidMove(block3, block1, block3.getBlockNum(), block1.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block3 and block1!"); for testing
             } else if (block3.getBounds().intersects(block4.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block3 and block4!");
+                swap(block3, block4);
+                //JOptionPane.showMessageDialog(null, "merge between block3 and block4!"); for testing
             } else {
-                block3.setLocation(block3.initialX, block3.initialY);
+                block3.setLocation(block3.getTempX(), block3.getTempY());
                 JOptionPane.showMessageDialog(null, "block3 resets when it is dragged out of its allowed boundary!");
             }
         } else {
@@ -881,13 +1033,16 @@ public class myFrame extends javax.swing.JFrame {
     private void block4MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block4MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block4.getBounds().intersects(block3.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block4 and block3!");
+                swap(block4, block3);
+                //JOptionPane.showMessageDialog(null, "merge between block4 and block3!"); for testing
             } else if (block4.getBounds().intersects(block2.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block4 and block2!");
+                validMove = isValidMove(block4, block2, block4.getBlockNum(), block2.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block4 and block2!"); for testing
             } else if (block4.getBounds().intersects(block1.getBounds())) {
-                JOptionPane.showMessageDialog(null, "merge between block4 and block1!");
+                validMove = isValidMove(block4, block1, block4.getBlockNum(), block1.getBlockNum());
+                //JOptionPane.showMessageDialog(null, "merge between block4 and block1!"); for testing
             } else {
-                block4.setLocation(block4.initialX, block4.initialY);
+                block4.setLocation(block4.getTempX(), block4.getTempY());
                 JOptionPane.showMessageDialog(null, "block4 resets when it is dragged out of its allowed boundary!");
             }
         } else {
@@ -986,6 +1141,7 @@ public class myFrame extends javax.swing.JFrame {
                             jLabelB2.setText(textFieldB2.getText());
                             int intB3 = add(textFieldB1.getText(), textFieldB2.getText());
                             jLabelB3.setText(Integer.toString(intB3));  // Int to String 
+
                         }
 
                     } else if (variable == 0 && jCheckBoxMultiply.isSelected()) {   // 
