@@ -452,6 +452,10 @@ public class myFrame extends javax.swing.JFrame {
                             break;
                         }
                     }
+                    else {
+                        coefficient++;
+                        valid = false;
+                    }
                 }
                 if (cFrac > 1) {
                     valid = false;
