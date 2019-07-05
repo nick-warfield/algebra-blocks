@@ -9,6 +9,7 @@ package algebrablocks;
  *
  * @author Jorg3
  */
+import java.awt.GridBagLayout;
 import javax.swing.*;
 public class App {
 

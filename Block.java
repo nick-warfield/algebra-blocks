@@ -42,76 +42,76 @@ public class Block extends JPanel{
     }
 
     //Methods...
-    protected void setMyVariableValue(String val) {
+    public synchronized void setMyVariableValue(String val) {
         this.myVariableValue = val;
     }
-    protected String getMyVariableValue() {
+    public synchronized String getMyVariableValue() {
         return myVariableValue;
     }
-    protected void setImAVariable(boolean par){
+    public synchronized void setImAVariable(boolean par){
         imAVariable = par;
     }
-    protected boolean getImAVariable(){
+    public synchronized boolean getImAVariable(){
         return imAVariable;
     }
-    protected int getMyValue() {
+    public synchronized int getMyValue() {
         return myValue;
     }
-    protected void setMyValue(int val) {
+    public synchronized void setMyValue(int val) {
         this.myValue = val;
     }
-    protected void setTempX (int newX) {
+    public synchronized void setTempX (int newX) {
         this.tempX = newX;
     }
-    protected void setTempY (int newY) {
+    public synchronized void setTempY (int newY) {
         this.tempY = newY;
     }
-    protected int getTempX() {
+    public synchronized int getTempX() {
         return tempX;
     }
-    protected int getTempY() {
+    public synchronized int getTempY() {
         return tempY;
     }
-    protected int getMyPosition() {
+    public synchronized int getMyPosition() {
         return myPosition;
     }
-    protected void setMyPosition(int pos) {
+    public synchronized void setMyPosition(int pos) {
         this.myPosition = pos;
     }
-    protected int getBlockNum() {
+    public synchronized int getBlockNum() {
         return blockNum;
     }
-    protected void setBlockNum (int myNum) {
+    public synchronized void setBlockNum (int myNum) {
         this.blockNum = myNum;
     }
-    protected boolean getIsFrac() {
+    public synchronized boolean getIsFrac() {
         return isFrac;
     }
-    protected void setIsFrac(boolean frac) {
+    public synchronized void setIsFrac(boolean frac) {
         this.isFrac = frac;
     }
-    protected void setIsLeft(boolean par){
+    public synchronized void setIsLeft(boolean par){
         this.isLeft = par;
     }
-    protected boolean isLeft(){
+    public synchronized boolean isLeft(){
         return isLeft;
     }
-    protected int getInitialX(){
+    public synchronized int getInitialX(){
         return initialX;
     }
-    protected int getInitialY(){
+    public synchronized int getInitialY(){
         return initialY;
     }
-    protected void setNumerator(int num) {
+    public synchronized void setNumerator(int num) {
         this.numerator = num;
     }
-    protected void setDenominator(int denum) {
+    public synchronized void setDenominator(int denum) {
         this.denominator = denum;
     }
-    protected int getNumerator() {
+    public synchronized int getNumerator() {
         return numerator;
     }
-    protected int getDenominator() {
+    public synchronized int getDenominator() {
         return denominator;
     }
     /**

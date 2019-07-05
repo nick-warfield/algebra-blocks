@@ -15,10 +15,15 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import org.apache.commons.math3.fraction.Fraction;
 import org.apache.commons.math3.fraction.FractionFormat;
 
@@ -37,12 +42,17 @@ public class myFrame extends javax.swing.JFrame {
     private int two = 2;
     private int three = 3;
     private int four = 4;
-    private static int positionOne = 20;
-    private static int positionTwo = 278;
-    private static int positionThree = 536;
-    private static int positionFour = 794;
-    private static int positionY = 48;
+    private int positionOne = 20;
+    private int positionTwo = 278;
+    private int positionThree = 536;
+    private int positionFour = 794;
+    private int positionY = 48;
     private boolean validMove = false;
+    private int coefficient = 0;
+    private String theOperation = "";
+    private String theOperation2 = "";
+    private move moveMe;
+    private swap swapMe;
 
     /**
      * Creates new form myFrame
@@ -84,7 +94,7 @@ public class myFrame extends javax.swing.JFrame {
         block3.setIsLeft(false);
         block4.setIsLeft(false);
         block4.setVisible(false);
-        block4.setEnabled(false);
+        // block4.setEnabled(false);
         textFieldB1.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -129,11 +139,350 @@ public class myFrame extends javax.swing.JFrame {
     }
 
     /**
-     * ***method to check if the drag drop on top of a block is valid****
+     * ***method to check if the drag drop on top of a block is valid
+     *
+     ****
+     * @param one
+     * @param two
+     * @param oper
      */
-    public void move() {
-       
+    /*class move2 extends SwingWorker<Void, Void> {
+         String test = "0";
+         protected Block one;
+         protected Block two;
+         protected String oper;
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            block4.setVisible(true);
+            jLabelB4.setText(jLabelB2.getText());
+            block2.setVisible(false);
+            jLabelOperator2.setText("+");
+            jLabelOperator.setText("");
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            swap(one, block1);
+            if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree){
+                if (one.getBlockNum() == 2) {
+                    if (one.getMyPosition() == positionTwo){
+                        swap(one, block1);
+                    }
+                }
+            }
+        }  
+    }*/
+    
+    public class move extends SwingWorker<Integer, Void> {
+    protected Block one;
+    protected Block two;
+    protected String sOperation;
+    protected String sOperation2;
+
+    @Override
+    protected synchronized Integer doInBackground() throws Exception {
+        String value = "";
+        String oTemp = "";
+        String sTemp = "";
+        Fraction fraction;
+        FractionFormat format = new FractionFormat();
+        int iNeg = -1;
+        int temp = 0;
+        boolean isNeg = false;
+        boolean becameFrac = false;
+        Integer toSwap = 0;
+        String evaluator = "";
+        int numFrac = 0;
+        int denoFrac = 1;
+        String updateOperation = "";
+
+        if (one.getImAVariable()) {
+            // code will change if we decide to add coefficient.
+        } else {
+            if (one.isFrac) {
+                if (one.getNumerator() > -1 || one.getDenominator() > -1) {
+                    isNeg = false;
+                } else {
+                    isNeg = true;
+                }
+            } else {
+                if (one.myValue > -1) {
+                    isNeg = false;
+                } else {
+                    isNeg = true;
+                }
+            }
+        }
+
+        if (one.isFrac) {
+            if (jLabelOperator2.getText() == "") {
+                evaluator = sOperation;
+            }
+            else if (jLabelOperator.getText() == "") {
+                evaluator = sOperation2;
+            }
+            switch (evaluator) {
+                case "add":
+                    if (isNeg) {
+                        temp = one.getNumerator() * iNeg;
+                        fraction = new Fraction(temp, one.getDenominator());
+                        value = format.format(fraction);
+                    }
+                    else {
+                        temp = one.getNumerator() * iNeg;
+                        fraction = new Fraction(temp, one.getDenominator());
+                        value = format.format(fraction);
+                    }
+                    oTemp = "+";
+                    updateOperation = "add";
+                    break;
+                case "divide":
+                    if (one.getMyPosition() == positionTwo || one.getMyPosition() == positionFour) {
+                        fraction = new Fraction(one.getNumerator(), one.getDenominator());
+                        value = format.format(fraction);
+                    } else {
+                        fraction = new Fraction(one.getDenominator(), one.getNumerator());
+                        value = format.format(fraction);
+                    }
+                    oTemp = "*";
+                    updateOperation = "multiply";
+                    break;
+                case "multiply":
+                    fraction = new Fraction(one.getDenominator(), one.getNumerator());
+                    value = format.format(fraction);
+                    oTemp = "*";
+                    updateOperation = "multiply";
+                    break;
+            }
+        } else {
+            if (jLabelOperator2.getText().isEmpty()) {
+                evaluator = sOperation;
+            }
+            if (jLabelOperator.getText().isEmpty()) {
+                evaluator = sOperation2;
+            }
+            switch (evaluator) {
+                case "add":
+                    if (isNeg) {
+                        temp = one.getMyValue() * iNeg;
+                        sTemp = Integer.toString(temp);
+                        value = sTemp;
+                    }
+                    else {
+                        temp = one.getMyValue() * iNeg;
+                        sTemp = Integer.toString(temp);
+                        value = sTemp;
+                    }
+                    oTemp = "+";
+                    updateOperation = "add";
+                    break;
+                case "divide":
+                    if (one.getMyPosition() == positionTwo || one.getMyPosition() == positionFour) {
+                        temp = one.getMyValue();
+                        sTemp = Integer.toString(temp);
+                        value = sTemp;
+                    } else {
+                        temp = one.getMyValue();
+                        fraction = new Fraction(1, temp);
+                        value = format.format(fraction);
+                        becameFrac = true;
+                    }
+                    oTemp = "*";
+                    updateOperation = "multiply";
+                    break;
+                case "multiply":
+                    temp = one.getMyValue();
+                    fraction = new Fraction(1, temp);
+                    becameFrac = true;
+                    oTemp = "*";
+                    updateOperation = "multiply";
+                    break;
+            }
+        }
+        
+        if (one.getBlockNum() == 1) {
+            if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree) {
+                block4.setBackground(block1.getBackground());
+                jLabelB4.setText(value);
+                block4.setVisible(true);
+                jLabelOperator.setText("");
+                jLabelOperator2.setText(oTemp);
+                theOperation2 = updateOperation;
+                theOperation = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block4.setMyValue(temp);
+                }
+            }
+            else if (two.getBlockNum() == 4 && two.getMyPosition() == positionThree) {
+                block3.setBackground(block1.getBackground());
+                jLabelB3.setText(value);
+                block3.setVisible(true);
+                jLabelOperator.setText("");
+                jLabelOperator2.setText(oTemp);
+                theOperation2 = updateOperation;
+                theOperation = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block3.setMyValue(temp);
+                }
+            }
+            if (one.getMyPosition() == positionTwo) {
+                toSwap = 1;
+            }
+        }
+        else if (one.getBlockNum() == 2) {
+            if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree) {
+                block4.setBackground(block2.getBackground());
+                jLabelB4.setText(value);
+                block4.setVisible(true);
+                //block4.setFocusable(false);
+                jLabelOperator.setText("");
+                jLabelOperator2.setText(oTemp);
+                theOperation2 = updateOperation;
+                theOperation = "";
+                 one.setVisible(false);
+                 if (becameFrac) {
+                    
+                }
+                else {
+                    block4.setMyValue(temp);
+                }
+                 //System.out.println(SwingUtilities.isEventDispatchThread() + " doInBackground");     for testing
+            }
+            else if (two.getBlockNum() == 4 && two.getMyPosition() == positionThree) {
+                block3.setBackground(block2.getBackground());
+                jLabelB3.setText(value);
+                block3.setVisible(true);
+                jLabelOperator.setText("");
+                jLabelOperator2.setText(oTemp);
+                theOperation2 = updateOperation;
+                theOperation = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block3.setMyValue(temp);
+                }
+            }
+            if (one.getMyPosition() == positionTwo) {
+                toSwap = 1;
+            }
+        }
+        else if (one.getBlockNum() == 3) {
+            if (two.getBlockNum() == 2 && two.getMyPosition() == positionTwo) {
+                block1.setBackground(block3.getBackground());
+                jLabelB1.setText(value);
+                block1.setVisible(true);
+                jLabelOperator.setText(oTemp);
+                jLabelOperator2.setText("");
+                theOperation = updateOperation;
+                theOperation2 = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block1.setMyValue(temp);
+                }
+            }
+            else if (two.getBlockNum() == 1 && two.getMyPosition() == positionTwo) {
+                block2.setBackground(block3.getBackground());
+                jLabelB2.setText(value);
+                block2.setVisible(true);
+                jLabelOperator.setText(oTemp);
+                jLabelOperator2.setText("");
+                theOperation = updateOperation;
+                theOperation2 = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block2.setMyValue(temp);
+                }
+            }
+            if (one.getMyPosition() == positionThree) {
+                toSwap = 3;
+            }
+        }
+        else if (one.getBlockNum() == 4) {
+            if (two.getBlockNum() == 2 && two.getMyPosition() == positionTwo) {
+                block1.setBackground(block4.getBackground());
+                jLabelB1.setText(value);
+                block1.setVisible(true);
+                jLabelOperator.setText(oTemp);
+                jLabelOperator2.setText("");
+                theOperation = updateOperation;
+                theOperation2 = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block1.setMyValue(temp);
+                }
+            }
+            else if (two.getBlockNum() == 1 && two.getMyPosition() == positionTwo) {
+                block2.setBackground(block4.getBackground());
+                jLabelB2.setText(value);
+                block2.setVisible(true);
+                jLabelOperator.setText(oTemp);
+                jLabelOperator2.setText("");
+                theOperation = updateOperation;
+                theOperation2 = "";
+                one.setVisible(false);
+                if (becameFrac) {
+                    
+                }
+                else {
+                    block2.setMyValue(temp);
+                }
+            }
+            if (one.getMyPosition() == positionThree) {
+                toSwap = 3;
+            }
+        }
+        return toSwap;
     }
+
+    @Override
+    protected synchronized void done() {
+        try {
+            Integer swapThese = get();
+            if (swapThese == 1) {
+                //swap(block1, block2);
+                swapMe = new swap();
+                swapMe.blockOne = block1;
+                swapMe.blockTwo = block2;
+                swapMe.execute();
+            }
+            if (swapThese == 3) {
+                //swap(block3, block4);
+                swapMe = new swap();
+                swapMe.blockOne = block3;
+                swapMe.blockTwo = block4;
+                swapMe.execute();
+            }
+        } catch (InterruptedException ex) {
+            
+        } catch (ExecutionException ex) {
+            
+        }
+        //System.out.println(SwingUtilities.isEventDispatchThread() + " done()");    for testing
+    }
+        
+    }
+
     public boolean isValidMove(Block first, Block second, int tp, int btm) {
         boolean valid = false;
         int top = tp;
@@ -145,30 +494,48 @@ public class myFrame extends javax.swing.JFrame {
                 valid = true;
             }
         } else if (first.isLeft() != second.isLeft()) {
-            if (!block4.isEnabled() || !block3.isEnabled()) {
-                if (top == 3) {
+            if (!block4.isVisible() || !block3.isVisible()) {
+                if (top == 3 || top == 4) {
                     valid = false;
                 } else {
-                    valid = true;
+                    if (first.imAVariable) {
+                        if (operation == 3 && first.getMyPosition() == 2) {
+                            valid = true;
+                        } else {
+                            valid = false;
+                        }
+                    } else {
+                        valid = true;
+                    }
                 }
 
-            } else if (!block1.isEnabled() || !block2.isEnabled()) {
-                if (top == 2) {
+            } else if (!block1.isVisible() || !block2.isVisible()) {
+                if (top == 2 || top == 1) {
                     valid = false;
                 } else {
-                    valid = true;
+                    if (first.imAVariable) {
+                        if (operation2 == 3 && first.getMyPosition() == 4) {
+                            valid = true;
+                        } else {
+                            valid = false;
+                        }
+                    } else {
+                        valid = true;
+                    }
                 }
             }
         }
+
         return valid;
     }
 
-    public static void swap(Block blockOne, Block blockTwo) {
-        //int tempX = blockOne.getInitialX();
-        //int tempY = blockOne.getInitialY();
-        //blockOne.setLocation(blockTwo.getInitialX(), blockTwo.getInitialY());
-        //blockTwo.setLocation(tempX, tempY);
-        if (blockOne.getMyPosition() == positionOne) {
+     class swap extends SwingWorker <Void, Void> {
+        protected Block blockOne;
+        protected Block blockTwo;
+    
+        @Override
+        protected synchronized Void doInBackground() throws Exception {
+            if (blockOne.getMyPosition() == positionOne) {
             blockOne.setLocation(positionTwo, positionY);
             blockOne.setMyPosition(positionTwo);
             blockOne.setTempX(positionTwo);
@@ -205,9 +572,11 @@ public class myFrame extends javax.swing.JFrame {
             blockTwo.setTempX(positionFour);
             blockTwo.setTempY(positionY);
         }
+            return null;
+        }
     }
 
-    public static String myFraction(Block one, Block two, String operation) {
+    public static synchronized String myFraction(Block one, Block two, String operation) {
         Fraction fracOne = new Fraction(one.numerator, one.denominator);
         Fraction fracTwo = new Fraction(two.numerator, two.denominator);
         Fraction fracAnswer;
@@ -270,7 +639,9 @@ public class myFrame extends javax.swing.JFrame {
         value = deNum + "/" + nuNum;
         return value;
     }*/
-    public void reset() {
+    public synchronized void reset() {
+        theOperation = "";
+        theOperation2 = "";
         block1.setMyVariableValue("");
         block2.setMyVariableValue("");
         block3.setMyVariableValue("");
@@ -288,8 +659,8 @@ public class myFrame extends javax.swing.JFrame {
         operation = 0;
         operation2 = 0;
         operationChecked = false;
-        jLabelOperator.setText(" ");
-        jLabelOperator2.setText(" ");
+        jLabelOperator.setText("");
+        jLabelOperator2.setText("");
         block1.setBackground(block1.initialColor);
         block2.setBackground(block2.initialColor);
         block3.setBackground(block3.initialColor);
@@ -307,10 +678,10 @@ public class myFrame extends javax.swing.JFrame {
         block2.setVisible(true);
         block3.setVisible(true);
         block4.setVisible(false);
-        block1.setEnabled(true);
-        block2.setEnabled(true);
-        block3.setEnabled(true);
-        block4.setEnabled(false);
+        //block1.setEnabled(true);
+        //block2.setEnabled(true);
+        //block3.setEnabled(true);
+        //block4.setEnabled(false);
         jCheckBoxAdd.setEnabled(true);
         jCheckBoxMultiply.setEnabled(true);
         jCheckBoxDivide.setEnabled(true);
@@ -326,16 +697,20 @@ public class myFrame extends javax.swing.JFrame {
         block2.setLocation(positionTwo, positionY);
         block3.setLocation(positionThree, positionY);
         block4.setLocation(positionFour, positionY);
+        block1.setMyPosition(positionOne);
+        block2.setMyPosition(positionTwo);
+        block3.setMyPosition(positionThree);
+        block4.setMyPosition(positionFour);
     }
 
-    public boolean isValidInput(String[] arr) {
+    public synchronized boolean isValidInput(String[] arr) {
         int b1 = 0;
         int b2 = 1;
         int b3 = 2;
         int num;
-        int coefficient = 0; // checks to see if there are coefficients
         String sNum;
         boolean valid = true;
+        int denom = 1;
 
         if (variable == 0) {
             try {                                       // checks for integers
@@ -369,21 +744,26 @@ public class myFrame extends javax.swing.JFrame {
                         String[] nd = splitNum(textFieldB1.getText());
                         int numerator = 0;
                         int denominator = 1;
-                        block1.setNumerator(Integer.parseInt(nd[numerator]));
-                        block1.setDenominator(Integer.parseInt(nd[denominator]));
-                        block1.setIsFrac(true);
-                        isFraction = true;
+                        if (nd[denominator] == "0") {
+                            denom = 0;
+                        } else {
+                            block1.setNumerator(Integer.parseInt(nd[numerator]));
+                            block1.setDenominator(Integer.parseInt(nd[denominator]));
+                            block1.setIsFrac(true);
+                            isFraction = true;
+                            coefficient = 0;
+                        }
+
                     } else {
                         valid = false;
                     }
                     if (coefficient == 0) {
                         block1.setImAVariable(true);
                         block1.setMyVariableValue(textFieldB1.getText());
-                    }
-                    else {
+                    } else {
                         valid = false;
                     }
-                    
+
                 }
 
             }
@@ -416,21 +796,25 @@ public class myFrame extends javax.swing.JFrame {
                         String[] nd = splitNum(textFieldB2.getText());
                         int numerator = 0;
                         int denominator = 1;
-                        block2.setNumerator(Integer.parseInt(nd[numerator]));
-                        block2.setDenominator(Integer.parseInt(nd[denominator]));
-                        block2.setIsFrac(true);
-                        isFraction = true;
+                        if (nd[denominator] == "0") {
+                            denom = 0;
+                        } else {
+                            block2.setNumerator(Integer.parseInt(nd[numerator]));
+                            block2.setDenominator(Integer.parseInt(nd[denominator]));
+                            block2.setIsFrac(true);
+                            isFraction = true;
+                            coefficient = 0;
+                        }
                     } else {
                         valid = false;
                     }
                     if (coefficient == 0) {
                         block2.setImAVariable(true);
                         block2.setMyVariableValue(textFieldB2.getText());
-                    }
-                    else {
+                    } else {
                         valid = false;
                     }
-                    
+
                 }
 
             }
@@ -451,8 +835,7 @@ public class myFrame extends javax.swing.JFrame {
                             cFrac++;
                             break;
                         }
-                    }
-                    else {
+                    } else {
                         coefficient++;
                         valid = false;
                     }
@@ -466,7 +849,7 @@ public class myFrame extends javax.swing.JFrame {
             }
         }
 
-        if (variable == 1 && cFrac > 1 || coefficient > 0) {
+        if (variable == 1 && cFrac > 1 || coefficient > 0 || denom == 0) {
             valid = false;
         } else if (variable > 1) {
             valid = false;
@@ -509,26 +892,30 @@ public class myFrame extends javax.swing.JFrame {
         jCheckBoxDivide = new javax.swing.JCheckBox();
         jButtonEnter = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
+        jLabelByGroup3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algebra Blocks");
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 227, 954, 10));
 
         textFieldB1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textFieldB1.setMaximumSize(new java.awt.Dimension(52, 20));
         textFieldB1.setMinimumSize(new java.awt.Dimension(52, 20));
-        textFieldB1.setPreferredSize(new java.awt.Dimension(52, 20));
         textFieldB1.setText("Block1");
+        getContentPane().add(textFieldB1, new org.netbeans.lib.awtextra.AbsoluteConstraints(29, 332, -1, -1));
 
         textFieldB2.setMaximumSize(new java.awt.Dimension(52, 20));
         textFieldB2.setMinimumSize(new java.awt.Dimension(52, 20));
         textFieldB2.setName(""); // NOI18N
-        textFieldB2.setPreferredSize(new java.awt.Dimension(52, 20));
         textFieldB2.setText("Block2");
+        getContentPane().add(textFieldB2, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 332, -1, -1));
 
         textFieldB3.setMaximumSize(new java.awt.Dimension(52, 20));
         textFieldB3.setMinimumSize(new java.awt.Dimension(52, 20));
-        textFieldB3.setPreferredSize(new java.awt.Dimension(52, 20));
         textFieldB3.setText("Block3");
+        getContentPane().add(textFieldB3, new org.netbeans.lib.awtextra.AbsoluteConstraints(166, 332, -1, -1));
 
         jCheckBoxAdd.setText("Add");
         jCheckBoxAdd.setToolTipText("");
@@ -542,6 +929,7 @@ public class myFrame extends javax.swing.JFrame {
                 jCheckBoxAddMouseClicked(evt);
             }
         });
+        getContentPane().add(jCheckBoxAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(29, 271, -1, -1));
 
         jCheckBoxMultiply.setText("Multiply");
         jCheckBoxMultiply.addItemListener(new java.awt.event.ItemListener() {
@@ -554,6 +942,7 @@ public class myFrame extends javax.swing.JFrame {
                 jCheckBoxMultiplyMouseClicked(evt);
             }
         });
+        getContentPane().add(jCheckBoxMultiply, new org.netbeans.lib.awtextra.AbsoluteConstraints(98, 271, -1, -1));
 
         block1.setBackground(new java.awt.Color(204, 255, 255));
         block1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -590,6 +979,8 @@ public class myFrame extends javax.swing.JFrame {
                 .addGap(36, 36, 36))
         );
 
+        getContentPane().add(block1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 48, -1, -1));
+
         block2.setBackground(new java.awt.Color(255, 204, 255));
         block2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         block2.setAutoscrolls(true);
@@ -624,6 +1015,8 @@ public class myFrame extends javax.swing.JFrame {
                 .addComponent(jLabelB2)
                 .addGap(36, 36, 36))
         );
+
+        getContentPane().add(block2, new org.netbeans.lib.awtextra.AbsoluteConstraints(278, 48, -1, -1));
 
         block3.setBackground(new java.awt.Color(204, 204, 255));
         block3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -660,6 +1053,8 @@ public class myFrame extends javax.swing.JFrame {
                 .addGap(36, 36, 36))
         );
 
+        getContentPane().add(block3, new org.netbeans.lib.awtextra.AbsoluteConstraints(536, 48, -1, -1));
+
         blockEqualsSign.setBackground(new java.awt.Color(0, 0, 0));
         blockEqualsSign.setToolTipText("");
         blockEqualsSign.setOpaque(false);
@@ -668,23 +1063,28 @@ public class myFrame extends javax.swing.JFrame {
         jLabelEqualSign.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabelEqualSign.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelEqualSign.setText("=");
-        jLabelEqualSign.setMaximumSize(new java.awt.Dimension(111, 29));
-        jLabelEqualSign.setMinimumSize(new java.awt.Dimension(111, 29));
-        jLabelEqualSign.setPreferredSize(new java.awt.Dimension(111, 29));
+        jLabelEqualSign.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabelEqualSign.setMaximumSize(new java.awt.Dimension(94, 40));
+        jLabelEqualSign.setMinimumSize(new java.awt.Dimension(94, 40));
+        jLabelEqualSign.setPreferredSize(new java.awt.Dimension(94, 40));
 
         javax.swing.GroupLayout blockEqualsSignLayout = new javax.swing.GroupLayout(blockEqualsSign);
         blockEqualsSign.setLayout(blockEqualsSignLayout);
         blockEqualsSignLayout.setHorizontalGroup(
             blockEqualsSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelEqualSign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockEqualsSignLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelEqualSign, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
         );
         blockEqualsSignLayout.setVerticalGroup(
             blockEqualsSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockEqualsSignLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jLabelEqualSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(42, 42, 42))
         );
+
+        getContentPane().add(blockEqualsSign, new org.netbeans.lib.awtextra.AbsoluteConstraints(407, 48, -1, -1));
 
         blockOperatorSign.setBackground(new java.awt.Color(0, 0, 0));
         blockOperatorSign.setOpaque(false);
@@ -692,46 +1092,58 @@ public class myFrame extends javax.swing.JFrame {
         jLabelOperator.setBackground(new java.awt.Color(0, 0, 0));
         jLabelOperator.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabelOperator.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelOperator.setMaximumSize(new java.awt.Dimension(111, 29));
-        jLabelOperator.setMinimumSize(new java.awt.Dimension(111, 29));
-        jLabelOperator.setPreferredSize(new java.awt.Dimension(111, 29));
+        jLabelOperator.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabelOperator.setMaximumSize(new java.awt.Dimension(94, 40));
+        jLabelOperator.setMinimumSize(new java.awt.Dimension(94, 40));
+        jLabelOperator.setPreferredSize(new java.awt.Dimension(94, 40));
 
         javax.swing.GroupLayout blockOperatorSignLayout = new javax.swing.GroupLayout(blockOperatorSign);
         blockOperatorSign.setLayout(blockOperatorSignLayout);
         blockOperatorSignLayout.setHorizontalGroup(
             blockOperatorSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelOperator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(blockOperatorSignLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelOperator, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         blockOperatorSignLayout.setVerticalGroup(
             blockOperatorSignLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockOperatorSignLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(37, Short.MAX_VALUE)
                 .addComponent(jLabelOperator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(41, 41, 41))
         );
+
+        getContentPane().add(blockOperatorSign, new org.netbeans.lib.awtextra.AbsoluteConstraints(149, 48, -1, -1));
 
         blockOperatorSign2.setBackground(new java.awt.Color(0, 0, 0));
         blockOperatorSign2.setOpaque(false);
 
         jLabelOperator2.setBackground(new java.awt.Color(0, 0, 0));
         jLabelOperator2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabelOperator2.setMaximumSize(new java.awt.Dimension(111, 29));
-        jLabelOperator2.setMinimumSize(new java.awt.Dimension(111, 29));
-        jLabelOperator2.setPreferredSize(new java.awt.Dimension(111, 29));
+        jLabelOperator2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelOperator2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabelOperator2.setMaximumSize(new java.awt.Dimension(94, 40));
+        jLabelOperator2.setMinimumSize(new java.awt.Dimension(94, 40));
+        jLabelOperator2.setPreferredSize(new java.awt.Dimension(94, 40));
 
         javax.swing.GroupLayout blockOperatorSign2Layout = new javax.swing.GroupLayout(blockOperatorSign2);
         blockOperatorSign2.setLayout(blockOperatorSign2Layout);
         blockOperatorSign2Layout.setHorizontalGroup(
             blockOperatorSign2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelOperator2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(blockOperatorSign2Layout.createSequentialGroup()
+                .addComponent(jLabelOperator2, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                .addContainerGap())
         );
         blockOperatorSign2Layout.setVerticalGroup(
             blockOperatorSign2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, blockOperatorSign2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jLabelOperator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(42, 42, 42))
         );
+
+        getContentPane().add(blockOperatorSign2, new org.netbeans.lib.awtextra.AbsoluteConstraints(665, 48, -1, -1));
 
         block4.setBackground(new java.awt.Color(204, 255, 204));
         block4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -763,10 +1175,12 @@ public class myFrame extends javax.swing.JFrame {
         block4Layout.setVerticalGroup(
             block4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, block4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jLabelB4)
                 .addGap(36, 36, 36))
         );
+
+        getContentPane().add(block4, new org.netbeans.lib.awtextra.AbsoluteConstraints(794, 48, -1, -1));
 
         jCheckBoxDivide.setText("Divide");
         jCheckBoxDivide.setToolTipText("");
@@ -780,6 +1194,7 @@ public class myFrame extends javax.swing.JFrame {
                 jCheckBoxDivideMouseClicked(evt);
             }
         });
+        getContentPane().add(jCheckBoxDivide, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, 271, -1, -1));
 
         jButtonEnter.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButtonEnter.setText("Enter");
@@ -788,6 +1203,7 @@ public class myFrame extends javax.swing.JFrame {
                 jButtonEnterMouseClicked(evt);
             }
         });
+        getContentPane().add(jButtonEnter, new org.netbeans.lib.awtextra.AbsoluteConstraints(343, 322, 99, 42));
 
         jButtonReset.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButtonReset.setText("Reset");
@@ -796,83 +1212,10 @@ public class myFrame extends javax.swing.JFrame {
                 jButtonResetMouseClicked(evt);
             }
         });
+        getContentPane().add(jButtonReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(482, 322, 99, 42));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(block1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(blockOperatorSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(block2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(blockEqualsSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(block3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(blockOperatorSign2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(block4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxAdd)
-                            .addComponent(textFieldB1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(textFieldB2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(23, 23, 23)
-                                .addComponent(textFieldB3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(132, 132, 132)
-                                .addComponent(jButtonEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)
-                                .addComponent(jButtonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jCheckBoxMultiply)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCheckBoxDivide)))))
-                .addContainerGap(49, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(blockOperatorSign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(block1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(blockOperatorSign2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(blockEqualsSign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(block2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(block3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(block4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(61, 61, 61)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxAdd)
-                    .addComponent(jCheckBoxMultiply)
-                    .addComponent(jCheckBoxDivide))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(textFieldB1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(textFieldB2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(textFieldB3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(52, 52, 52))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButtonEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(40, 40, 40))))
-        );
+        jLabelByGroup3.setText("By: group 3");
+        getContentPane().add(jLabelByGroup3, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 390, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -923,6 +1266,7 @@ public class myFrame extends javax.swing.JFrame {
             jCheckBoxDivide.setSelected(false);
             operation = 1;
             operationChecked = true;
+            theOperation = "add";
         } else if (evt.getStateChange() == 0) {
             jLabelOperator.setText(" ");
             operation = 0;
@@ -937,6 +1281,7 @@ public class myFrame extends javax.swing.JFrame {
             jCheckBoxDivide.setSelected(false);
             operation = 2;
             operationChecked = true;
+            theOperation = "multiply";
         } else if (evt.getStateChange() == 0) {
             jLabelOperator.setText(" ");
             operation = 0;
@@ -961,13 +1306,42 @@ public class myFrame extends javax.swing.JFrame {
     private void block1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block1.getBounds().intersects(block2.getBounds())) {
-                swap(block1, block2);
+                //swap(block1, block2);
+                swapMe = new swap();
+                swapMe.blockOne = block1;
+                swapMe.blockTwo = block2;
+                swapMe.execute();
                 //JOptionPane.showMessageDialog(null, "merge between block1 and block2!"); for testing
             } else if (block1.getBounds().intersects(block3.getBounds())) {
                 validMove = isValidMove(block1, block3, block1.getBlockNum(), block3.getBlockNum());
-                //JOptionPane.showMessageDialog(null, "merge between block1 and block3!"); for testing
+                if (validMove) {
+                    //move(block1, block3, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block1;
+                    moveMe.two = block3;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block1.setLocation(block1.getTempX(), block1.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
+
             } else if (block1.getBounds().intersects(block4.getBounds())) {
                 validMove = isValidMove(block1, block4, block1.getBlockNum(), block4.getBlockNum());
+                if (validMove) {
+                    //move(block1, block4, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block1;
+                    moveMe.two = block4;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block1.setLocation(block1.getTempX(), block1.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
+
                 //JOptionPane.showMessageDialog(null, "merge between block1 and block4!"); for testing
             } else {
                 block1.setLocation(block1.getTempX(), block1.getTempY());
@@ -982,13 +1356,44 @@ public class myFrame extends javax.swing.JFrame {
     private void block2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block2.getBounds().intersects(block1.getBounds())) {
-                swap(block2, block1);
+                //swap(block2, block1);
+                swapMe = new swap();
+                swapMe.blockOne = block2;
+                swapMe.blockTwo = block1;
+                swapMe.execute();
                 //JOptionPane.showMessageDialog(null, "merge between block2 and block1!"); for testing
             } else if (block2.getBounds().intersects(block3.getBounds())) {
                 validMove = isValidMove(block2, block3, block2.getBlockNum(), block3.getBlockNum());
+                if (validMove) {
+                    //swap(block2, block1);
+                    //move(block2, block3, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block2;
+                    moveMe.two = block3;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                   // System.out.println(SwingUtilities.isEventDispatchThread() + " keyreleased");    for testing
+                    
+                } else {
+                    block2.setLocation(block2.getTempX(), block2.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block2 and block3!"); for testing
             } else if (block2.getBounds().intersects(block4.getBounds())) {
                 validMove = isValidMove(block2, block4, block2.getBlockNum(), block4.getBlockNum());
+                if (validMove) {
+                    //move(block2, block4, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block2;
+                    moveMe.two = block4;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block2.setLocation(block2.getTempX(), block2.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block2 and block4!"); for testing
             } else {
                 block2.setLocation(block2.getTempX(), block2.getTempY());
@@ -1004,12 +1409,40 @@ public class myFrame extends javax.swing.JFrame {
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block3.getBounds().intersects(block2.getBounds())) {
                 validMove = isValidMove(block3, block2, block3.getBlockNum(), block2.getBlockNum());
+                if (validMove) {
+                    //move(block3, block2, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block3;
+                    moveMe.two = block2;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block3.setLocation(block3.getTempX(), block3.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block3 and block2!"); for testing
             } else if (block3.getBounds().intersects(block1.getBounds())) {
                 validMove = isValidMove(block3, block1, block3.getBlockNum(), block1.getBlockNum());
+                if (validMove) {
+                    //move(block3, block1, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block3;
+                    moveMe.two = block1;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block3.setLocation(block3.getTempX(), block3.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block3 and block1!"); for testing
             } else if (block3.getBounds().intersects(block4.getBounds())) {
-                swap(block3, block4);
+                //swap(block3, block4);
+                swapMe = new swap();
+                swapMe.blockOne = block3;
+                swapMe.blockTwo = block4;
+                swapMe.execute();
                 //JOptionPane.showMessageDialog(null, "merge between block3 and block4!"); for testing
             } else {
                 block3.setLocation(block3.getTempX(), block3.getTempY());
@@ -1037,13 +1470,41 @@ public class myFrame extends javax.swing.JFrame {
     private void block4MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block4MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block4.getBounds().intersects(block3.getBounds())) {
-                swap(block4, block3);
+                //swap(block4, block3);
+                swapMe = new swap();
+                swapMe.blockOne = block4;
+                swapMe.blockTwo = block3;
+                swapMe.execute();
                 //JOptionPane.showMessageDialog(null, "merge between block4 and block3!"); for testing
             } else if (block4.getBounds().intersects(block2.getBounds())) {
                 validMove = isValidMove(block4, block2, block4.getBlockNum(), block2.getBlockNum());
+                if (validMove) {
+                    //move(block4, block2, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block4;
+                    moveMe.two = block2;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block4.setLocation(block4.getTempX(), block4.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block4 and block2!"); for testing
             } else if (block4.getBounds().intersects(block1.getBounds())) {
                 validMove = isValidMove(block4, block1, block4.getBlockNum(), block1.getBlockNum());
+                if (validMove) {
+                    //move(block4, block1, theOperation);
+                    moveMe = new move();
+                    moveMe.one = block4;
+                    moveMe.two = block1;
+                    moveMe.sOperation = theOperation;
+                    moveMe.sOperation2 = theOperation2;
+                    moveMe.execute();
+                } else {
+                    block4.setLocation(block4.getTempX(), block4.getTempY());
+                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block4 and block1!"); for testing
             } else {
                 block4.setLocation(block4.getTempX(), block4.getTempY());
@@ -1062,6 +1523,7 @@ public class myFrame extends javax.swing.JFrame {
             jCheckBoxMultiply.setSelected(false);
             operation = 3;
             operationChecked = true;
+            theOperation = "divide";
         } else if (evt.getStateChange() == 0) {
             jLabelOperator.setText(" ");
             operation = 0;
@@ -1104,6 +1566,7 @@ public class myFrame extends javax.swing.JFrame {
                             jLabelB1.setText(textFieldB1.getText());
                             jLabelB2.setText(textFieldB2.getText());
                             jLabelB3.setText(textB3);
+                            block3.setMyValue(Integer.parseInt(textB3));
                         } else {
                             JOptionPane.showMessageDialog(null, "Invalid input, please try agaoin.");
                             reset();
@@ -1145,6 +1608,7 @@ public class myFrame extends javax.swing.JFrame {
                             jLabelB2.setText(textFieldB2.getText());
                             int intB3 = add(textFieldB1.getText(), textFieldB2.getText());
                             jLabelB3.setText(Integer.toString(intB3));  // Int to String 
+                            block3.setMyValue(intB3);
 
                         }
 
@@ -1285,10 +1749,10 @@ public class myFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private algebrablocks.Block block1;
-    private algebrablocks.Block block2;
-    private algebrablocks.Block block3;
-    private algebrablocks.Block block4;
+    private volatile algebrablocks.Block block1;
+    private volatile algebrablocks.Block block2;
+    private volatile algebrablocks.Block block3;
+    private volatile algebrablocks.Block block4;
     private algebrablocks.Block blockEqualsSign;
     private algebrablocks.Block blockOperatorSign;
     private algebrablocks.Block blockOperatorSign2;
@@ -1301,6 +1765,7 @@ public class myFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelB2;
     private javax.swing.JLabel jLabelB3;
     private javax.swing.JLabel jLabelB4;
+    private javax.swing.JLabel jLabelByGroup3;
     private javax.swing.JLabel jLabelEqualSign;
     private javax.swing.JLabel jLabelOperator;
     private javax.swing.JLabel jLabelOperator2;
