@@ -174,313 +174,484 @@ public class myFrame extends javax.swing.JFrame {
             }
         }  
     }*/
-    
-    public class move extends SwingWorker<Integer, Void> {
-    protected Block one;
-    protected Block two;
-    protected String sOperation;
-    protected String sOperation2;
-
-    @Override
-    protected synchronized Integer doInBackground() throws Exception {
+    public void merge(Block o, Block t) {
+        Block one = o;
+        Block two = t;
+        int val = 0;
+        int oneVal = 0;
+        int twoVal = 0;
         String value = "";
-        String oTemp = "";
-        String sTemp = "";
-        Fraction fraction;
-        FractionFormat format = new FractionFormat();
-        int iNeg = -1;
-        int temp = 0;
-        boolean isNeg = false;
-        boolean becameFrac = false;
-        Integer toSwap = 0;
-        String evaluator = "";
-        int numFrac = 0;
-        int denoFrac = 1;
-        String updateOperation = "";
+        boolean imAFraction = false;
+        Fraction oneFrac = null;
+        Fraction twoFrac = null;
+        Fraction fracTotal = null;
+        FractionFormat formater = new FractionFormat();
+        String theOperation = "";
 
-        if (one.getImAVariable()) {
-            // code will change if we decide to add coefficient.
-        } else {
-            if (one.isFrac) {
-                if (one.getNumerator() > -1 || one.getDenominator() > -1) {
-                    isNeg = false;
-                } else {
-                    isNeg = true;
-                }
-            } else {
-                if (one.myValue > -1) {
-                    isNeg = false;
-                } else {
-                    isNeg = true;
-                }
-            }
+        if (jLabelOperator.getText().isEmpty()) {
+            theOperation = jLabelOperator2.getText();
+        } else if (jLabelOperator2.getText().isEmpty()) {
+            theOperation = jLabelOperator.getText();
         }
 
-        if (one.isFrac) {
-            if (jLabelOperator2.getText() == "") {
-                evaluator = sOperation;
-            }
-            else if (jLabelOperator.getText() == "") {
-                evaluator = sOperation2;
-            }
-            switch (evaluator) {
-                case "add":
-                    if (isNeg) {
-                        temp = one.getNumerator() * iNeg;
-                        fraction = new Fraction(temp, one.getDenominator());
-                        value = format.format(fraction);
-                    }
-                    else {
-                        temp = one.getNumerator() * iNeg;
-                        fraction = new Fraction(temp, one.getDenominator());
-                        value = format.format(fraction);
-                    }
-                    oTemp = "+";
-                    updateOperation = "add";
-                    break;
-                case "divide":
-                    if (one.getMyPosition() == positionTwo || one.getMyPosition() == positionFour) {
-                        fraction = new Fraction(one.getNumerator(), one.getDenominator());
-                        value = format.format(fraction);
-                    } else {
-                        fraction = new Fraction(one.getDenominator(), one.getNumerator());
-                        value = format.format(fraction);
-                    }
-                    oTemp = "*";
-                    updateOperation = "multiply";
-                    break;
-                case "multiply":
-                    fraction = new Fraction(one.getDenominator(), one.getNumerator());
-                    value = format.format(fraction);
-                    oTemp = "*";
-                    updateOperation = "multiply";
-                    break;
+        if (one.getIsFrac() || two.getIsFrac()) {
+            imAFraction = true;
+
+            if (one.getIsFrac() && two.getIsFrac()) {
+                oneFrac = new Fraction(one.getNumerator(), one.getDenominator());
+                twoFrac = new Fraction(two.getNumerator(), two.getDenominator());
+                switch (theOperation) {
+                    case "x":
+                        fracTotal = oneFrac.multiply(twoFrac);
+                        break;
+                    case "+":
+                        fracTotal = oneFrac.add(twoFrac);
+                        break;
+                }
+            } else if (one.getIsFrac() && !two.getIsFrac()) {
+                oneFrac = new Fraction(one.getNumerator(), one.getDenominator());
+                switch (theOperation) {
+                    case "x":
+                        fracTotal = oneFrac.multiply(two.getMyValue());
+                        break;
+                    case "+":
+                        fracTotal = oneFrac.add(two.getMyValue());
+                        break;
+                }
+            } else if (!one.getIsFrac() && two.getIsFrac()) {
+                twoFrac = new Fraction(two.getNumerator(), two.getDenominator());
+                switch (theOperation) {
+                    case "x":
+                        fracTotal = twoFrac.multiply(one.getMyValue());
+                        break;
+                    case "+":
+                        fracTotal = twoFrac.add(one.getMyValue());
+                        break;
+                }
             }
         } else {
-            if (jLabelOperator2.getText().isEmpty()) {
-                evaluator = sOperation;
+            oneVal = one.getMyValue();
+            twoVal = two.getMyValue();
+            imAFraction = false;
+
+            switch (theOperation) {
+                case "x":
+                    val = oneVal * twoVal;
+                    break;
+                case "+":
+                    val = oneVal + twoVal;
+                    break;
             }
-            if (jLabelOperator.getText().isEmpty()) {
+        }
+        if (imAFraction) {
+            value = formater.format(fracTotal);
+        } else {
+            value = Integer.toString(val);
+        }
+
+        if (one.getBlockNum() == 1 || one.getBlockNum() == 2) {
+            if (block1.getMyPosition() == positionTwo) {
+                jLabelB1.setText(value);
+                block2.setVisible(false);
+            } else {
+                jLabelB2.setText(value);
+                block1.setVisible(false);
+            }
+            jLabelOperator.setText("");
+        } else if (one.getBlockNum() == 3 || one.getBlockNum() == 4) {
+            if (block3.getMyPosition() == positionThree) {
+                jLabelB3.setText(value);
+                block4.setVisible(false);
+            } else {
+                jLabelB4.setText(value);
+                block3.setVisible(false);
+            }
+            jLabelOperator2.setText("");
+        }
+    }
+
+    public class move extends SwingWorker<Integer, Void> {
+
+        protected Block one;
+        protected Block two;
+        protected String sOperation;
+        protected String sOperation2;
+
+        @Override
+        protected synchronized Integer doInBackground() throws Exception {
+            String value = "";
+            String oTemp = "";
+            String sTemp = "";
+            Fraction fraction = null;
+            FractionFormat format = new FractionFormat();
+            int iNeg = -1;
+            int temp = 0;
+            boolean isNeg = false;
+            boolean becameFrac = false;
+            Integer toSwap = 0;
+            String evaluator = "";
+            int numFrac = 0;
+            int denoFrac = 1;
+            String updateOperation = "";
+            boolean imAFraction = false;
+
+            if (one.getImAVariable()) {
+                // code will change if we decide to add coefficient.
+            } else {
+                if (one.isFrac) {
+                    if (one.getNumerator() > -1 || one.getDenominator() > -1) {
+                        isNeg = false;
+                    } else {
+                        isNeg = true;
+                    }
+                } else {
+                    if (one.myValue > -1) {
+                        isNeg = false;
+                    } else {
+                        isNeg = true;
+                    }
+                }
+            }
+            if (jLabelOperator2.getText() == "") {
+                evaluator = sOperation;
+            } else if (jLabelOperator.getText() == "") {
                 evaluator = sOperation2;
             }
-            switch (evaluator) {
-                case "add":
-                    if (isNeg) {
-                        temp = one.getMyValue() * iNeg;
-                        sTemp = Integer.toString(temp);
-                        value = sTemp;
-                    }
-                    else {
-                        temp = one.getMyValue() * iNeg;
-                        sTemp = Integer.toString(temp);
-                        value = sTemp;
-                    }
-                    oTemp = "+";
-                    updateOperation = "add";
-                    break;
-                case "divide":
-                    if (one.getMyPosition() == positionTwo || one.getMyPosition() == positionFour) {
-                        temp = one.getMyValue();
-                        sTemp = Integer.toString(temp);
-                        value = sTemp;
-                    } else {
+            if (one.isFrac) {
+
+                imAFraction = true;
+                switch (evaluator) {
+                    case "add":
+                        if (isNeg) {
+                            temp = one.getNumerator() * iNeg;
+                            fraction = new Fraction(temp, one.getDenominator());
+                            value = format.format(fraction);
+                        } else {
+                            temp = one.getNumerator() * iNeg;
+                            fraction = new Fraction(temp, one.getDenominator());
+                            value = format.format(fraction);
+                        }
+                        oTemp = "+";
+                        updateOperation = "add";
+                        break;
+                    case "divide":
+                        if (one.getMyPosition() == positionTwo || one.getMyPosition() == positionFour) {
+                            fraction = new Fraction(one.getNumerator(), one.getDenominator());
+                            value = format.format(fraction);
+
+                        } else if (one.getMyPosition() == positionOne || one.getMyPosition() == positionThree) {
+                            fraction = new Fraction(one.getDenominator(), one.getNumerator());
+                            value = format.format(fraction);
+                            int temp2 = 0;
+                            Fraction fracFlip = null;
+                            if (block1.getMyPosition() == positionOne) {
+                                temp2 = block2.getNumerator();
+                                block2.setNumerator(block2.getDenominator());
+                                block2.setDenominator(temp2);
+                                fracFlip = new Fraction(block2.getNumerator(), block2.getDenominator());
+                                jLabelB2.setText(format.format(fracFlip));
+
+                            } else if (block2.getMyPosition() == positionOne) {
+                                temp2 = block1.getNumerator();
+                                block1.setNumerator(block1.getDenominator());
+                                block1.setDenominator(temp2);
+                                fracFlip = new Fraction(block1.getNumerator(), block1.getDenominator());
+                                jLabelB1.setText(format.format(fracFlip));
+                            } else if (block3.getMyPosition() == positionThree) {
+                                temp2 = block4.getNumerator();
+                                block4.setNumerator(block4.getDenominator());
+                                block4.setDenominator(temp2);
+                                fracFlip = new Fraction(block4.getNumerator(), block4.getDenominator());
+                                jLabelB4.setText(format.format(fracFlip));
+                            } else if (block4.getMyPosition() == positionThree) {
+                                temp2 = block3.getNumerator();
+                                block3.setNumerator(block1.getDenominator());
+                                block3.setDenominator(temp2);
+                                fracFlip = new Fraction(block3.getNumerator(), block3.getDenominator());
+                                jLabelB3.setText(format.format(fracFlip));
+                            }
+                        }
+                        oTemp = "x";
+                        updateOperation = "multiply";
+                        break;
+                    case "multiply":
+                        fraction = new Fraction(one.getDenominator(), one.getNumerator());
+                        value = format.format(fraction);
+                        oTemp = "x";
+                        updateOperation = "multiply";
+                        break;
+                }
+            } else {
+                switch (evaluator) {
+                    case "add":
+                        if (isNeg) {
+                            temp = one.getMyValue() * iNeg;
+                            sTemp = Integer.toString(temp);
+                            value = sTemp;
+                        } else {
+                            temp = one.getMyValue() * iNeg;
+                            sTemp = Integer.toString(temp);
+                            value = sTemp;
+                        }
+                        oTemp = "+";
+                        updateOperation = "add";
+                        break;
+                    case "divide":
+                        if (one.getMyPosition() == positionTwo || one.getMyPosition() == positionFour) {
+                            if (one.imAVariable) {
+                                value = one.getMyVariableValue();
+                            } else {
+                                temp = one.getMyValue();
+                                sTemp = Integer.toString(temp);
+                                value = sTemp;
+                            }
+                        } else {
+                            temp = one.getMyValue();
+                            fraction = new Fraction(1, temp);
+                            value = format.format(fraction);
+                            becameFrac = true;
+                        }
+                        oTemp = "x";
+                        updateOperation = "multiply";
+                        break;
+                    case "multiply":
                         temp = one.getMyValue();
                         fraction = new Fraction(1, temp);
                         value = format.format(fraction);
                         becameFrac = true;
+                        oTemp = "x";
+                        updateOperation = "multiply";
+                        break;
+                }
+            }
+            if (one.getBlockNum() == 1) {
+                if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree) {
+                    block4.setBackground(block1.getBackground());
+                    jLabelB4.setText(value);
+                    block4.setVisible(true);
+                    jLabelOperator.setText("");
+                    jLabelOperator2.setText(oTemp);
+                    theOperation2 = updateOperation;
+                    theOperation = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block4.setNumerator(fraction.getNumerator());
+                        block4.setDenominator(fraction.getDenominator());
+                        block4.setIsFrac(true);
+                    } else {
+                        block4.setMyValue(temp);
                     }
-                    oTemp = "*";
-                    updateOperation = "multiply";
-                    break;
-                case "multiply":
-                    temp = one.getMyValue();
-                    fraction = new Fraction(1, temp);
-                    becameFrac = true;
-                    oTemp = "*";
-                    updateOperation = "multiply";
-                    break;
+                    if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block4.setImAVariable(true);
+                        block4.setMyVariableValue(value);
+                    }
+                } else if (two.getBlockNum() == 4 && two.getMyPosition() == positionThree) {
+                    block3.setBackground(block1.getBackground());
+                    jLabelB3.setText(value);
+                    block3.setVisible(true);
+                    jLabelOperator.setText("");
+                    jLabelOperator2.setText(oTemp);
+                    theOperation2 = updateOperation;
+                    theOperation = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block3.setNumerator(fraction.getNumerator());
+                        block3.setDenominator(fraction.getDenominator());
+                        block3.setIsFrac(true);
+                    } else {
+                        block3.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block3.setImAVariable(true);
+                        block3.setMyVariableValue(value);
+                    }
+                }
+                if (one.getMyPosition() == positionTwo) {
+                    toSwap = 1;
+                }
+            } else if (one.getBlockNum() == 2) {
+                if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree) {
+                    block4.setBackground(block2.getBackground());
+                    jLabelB4.setText(value);
+                    block4.setVisible(true);
+                    //block4.setFocusable(false);
+                    jLabelOperator.setText("");
+                    jLabelOperator2.setText(oTemp);
+                    theOperation2 = updateOperation;
+                    theOperation = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block4.setNumerator(fraction.getNumerator());
+                        block4.setDenominator(fraction.getDenominator());
+                        block4.setIsFrac(true);
+                    } else {
+                        block4.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block4.setImAVariable(true);
+                        block4.setMyVariableValue(value);
+                    }
+                    //System.out.println(SwingUtilities.isEventDispatchThread() + " doInBackground");     for testing
+                } else if (two.getBlockNum() == 4 && two.getMyPosition() == positionThree) {
+                    block3.setBackground(block2.getBackground());
+                    jLabelB3.setText(value);
+                    block3.setVisible(true);
+                    jLabelOperator.setText("");
+                    jLabelOperator2.setText(oTemp);
+                    theOperation2 = updateOperation;
+                    theOperation = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block3.setNumerator(fraction.getNumerator());
+                        block3.setDenominator(fraction.getDenominator());
+                        block3.setIsFrac(true);
+                    } else {
+                        block3.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block3.setImAVariable(true);
+                        block3.setMyVariableValue(value);
+                    }
+                }
+                if (one.getMyPosition() == positionTwo) {
+                    toSwap = 1;
+                }
+            } else if (one.getBlockNum() == 3) {
+                if (two.getBlockNum() == 2 && two.getMyPosition() == positionTwo) {
+                    block1.setBackground(block3.getBackground());
+                    jLabelB1.setText(value);
+                    block1.setVisible(true);
+                    jLabelOperator.setText(oTemp);
+                    jLabelOperator2.setText("");
+                    theOperation = updateOperation;
+                    theOperation2 = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block1.setNumerator(fraction.getNumerator());
+                        block1.setDenominator(fraction.getDenominator());
+                        block1.setIsFrac(true);
+                    } else {
+                        block1.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block1.setImAVariable(true);
+                        block1.setMyVariableValue(value);
+                    }
+                } else if (two.getBlockNum() == 1 && two.getMyPosition() == positionTwo) {
+                    block2.setBackground(block3.getBackground());
+                    jLabelB2.setText(value);
+                    block2.setVisible(true);
+                    jLabelOperator.setText(oTemp);
+                    jLabelOperator2.setText("");
+                    theOperation = updateOperation;
+                    theOperation2 = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block2.setNumerator(fraction.getNumerator());
+                        block2.setDenominator(fraction.getDenominator());
+                        block2.setIsFrac(true);
+                    } else {
+                        block2.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block2.setImAVariable(true);
+                        block2.setMyVariableValue(value);
+                    }
+                }
+                if (one.getMyPosition() == positionThree) {
+                    toSwap = 3;
+                }
+            } else if (one.getBlockNum() == 4) {
+                if (two.getBlockNum() == 2 && two.getMyPosition() == positionTwo) {
+                    block1.setBackground(block4.getBackground());
+                    jLabelB1.setText(value);
+                    block1.setVisible(true);
+                    jLabelOperator.setText(oTemp);
+                    jLabelOperator2.setText("");
+                    theOperation = updateOperation;
+                    theOperation2 = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block1.setNumerator(fraction.getNumerator());
+                        block1.setDenominator(fraction.getDenominator());
+                        block1.setIsFrac(true);
+                    } else {
+                        block1.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block1.setImAVariable(true);
+                        block1.setMyVariableValue(value);
+                    }
+                } else if (two.getBlockNum() == 1 && two.getMyPosition() == positionTwo) {
+                    block2.setBackground(block4.getBackground());
+                    jLabelB2.setText(value);
+                    block2.setVisible(true);
+                    jLabelOperator.setText(oTemp);
+                    jLabelOperator2.setText("");
+                    theOperation = updateOperation;
+                    theOperation2 = "";
+                    one.setVisible(false);
+                    if (becameFrac || imAFraction) {
+                        block2.setNumerator(fraction.getNumerator());
+                        block2.setDenominator(fraction.getDenominator());
+                        block2.setIsFrac(true);
+                    } else {
+                        block2.setMyValue(temp);
+                    }
+                     if (one.imAVariable) {
+                        one.setImAVariable(false);
+                        one.setMyVariableValue("");
+                        block2.setImAVariable(true);
+                        block2.setMyVariableValue(value);
+                    }
+                }
+                if (one.getMyPosition() == positionThree) {
+                    toSwap = 3;
+                }
             }
+            return toSwap;
         }
-        
-        if (one.getBlockNum() == 1) {
-            if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree) {
-                block4.setBackground(block1.getBackground());
-                jLabelB4.setText(value);
-                block4.setVisible(true);
-                jLabelOperator.setText("");
-                jLabelOperator2.setText(oTemp);
-                theOperation2 = updateOperation;
-                theOperation = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block4.setMyValue(temp);
-                }
-            }
-            else if (two.getBlockNum() == 4 && two.getMyPosition() == positionThree) {
-                block3.setBackground(block1.getBackground());
-                jLabelB3.setText(value);
-                block3.setVisible(true);
-                jLabelOperator.setText("");
-                jLabelOperator2.setText(oTemp);
-                theOperation2 = updateOperation;
-                theOperation = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block3.setMyValue(temp);
-                }
-            }
-            if (one.getMyPosition() == positionTwo) {
-                toSwap = 1;
-            }
-        }
-        else if (one.getBlockNum() == 2) {
-            if (two.getBlockNum() == 3 && two.getMyPosition() == positionThree) {
-                block4.setBackground(block2.getBackground());
-                jLabelB4.setText(value);
-                block4.setVisible(true);
-                //block4.setFocusable(false);
-                jLabelOperator.setText("");
-                jLabelOperator2.setText(oTemp);
-                theOperation2 = updateOperation;
-                theOperation = "";
-                 one.setVisible(false);
-                 if (becameFrac) {
-                    
-                }
-                else {
-                    block4.setMyValue(temp);
-                }
-                 //System.out.println(SwingUtilities.isEventDispatchThread() + " doInBackground");     for testing
-            }
-            else if (two.getBlockNum() == 4 && two.getMyPosition() == positionThree) {
-                block3.setBackground(block2.getBackground());
-                jLabelB3.setText(value);
-                block3.setVisible(true);
-                jLabelOperator.setText("");
-                jLabelOperator2.setText(oTemp);
-                theOperation2 = updateOperation;
-                theOperation = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block3.setMyValue(temp);
-                }
-            }
-            if (one.getMyPosition() == positionTwo) {
-                toSwap = 1;
-            }
-        }
-        else if (one.getBlockNum() == 3) {
-            if (two.getBlockNum() == 2 && two.getMyPosition() == positionTwo) {
-                block1.setBackground(block3.getBackground());
-                jLabelB1.setText(value);
-                block1.setVisible(true);
-                jLabelOperator.setText(oTemp);
-                jLabelOperator2.setText("");
-                theOperation = updateOperation;
-                theOperation2 = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block1.setMyValue(temp);
-                }
-            }
-            else if (two.getBlockNum() == 1 && two.getMyPosition() == positionTwo) {
-                block2.setBackground(block3.getBackground());
-                jLabelB2.setText(value);
-                block2.setVisible(true);
-                jLabelOperator.setText(oTemp);
-                jLabelOperator2.setText("");
-                theOperation = updateOperation;
-                theOperation2 = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block2.setMyValue(temp);
-                }
-            }
-            if (one.getMyPosition() == positionThree) {
-                toSwap = 3;
-            }
-        }
-        else if (one.getBlockNum() == 4) {
-            if (two.getBlockNum() == 2 && two.getMyPosition() == positionTwo) {
-                block1.setBackground(block4.getBackground());
-                jLabelB1.setText(value);
-                block1.setVisible(true);
-                jLabelOperator.setText(oTemp);
-                jLabelOperator2.setText("");
-                theOperation = updateOperation;
-                theOperation2 = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block1.setMyValue(temp);
-                }
-            }
-            else if (two.getBlockNum() == 1 && two.getMyPosition() == positionTwo) {
-                block2.setBackground(block4.getBackground());
-                jLabelB2.setText(value);
-                block2.setVisible(true);
-                jLabelOperator.setText(oTemp);
-                jLabelOperator2.setText("");
-                theOperation = updateOperation;
-                theOperation2 = "";
-                one.setVisible(false);
-                if (becameFrac) {
-                    
-                }
-                else {
-                    block2.setMyValue(temp);
-                }
-            }
-            if (one.getMyPosition() == positionThree) {
-                toSwap = 3;
-            }
-        }
-        return toSwap;
-    }
 
-    @Override
-    protected synchronized void done() {
-        try {
-            Integer swapThese = get();
-            if (swapThese == 1) {
-                //swap(block1, block2);
-                swapMe = new swap();
-                swapMe.blockOne = block1;
-                swapMe.blockTwo = block2;
-                swapMe.execute();
+        @Override
+        protected synchronized void done() {
+            try {
+                Integer swapThese = get();
+                if (swapThese == 1) {
+                    //swap(block1, block2);
+                    swapMe = new swap();
+                    swapMe.blockOne = block1;
+                    swapMe.blockTwo = block2;
+                    swapMe.execute();
+                }
+                if (swapThese == 3) {
+                    //swap(block3, block4);
+                    swapMe = new swap();
+                    swapMe.blockOne = block3;
+                    swapMe.blockTwo = block4;
+                    swapMe.execute();
+                }
+            } catch (InterruptedException ex) {
+
+            } catch (ExecutionException ex) {
+
             }
-            if (swapThese == 3) {
-                //swap(block3, block4);
-                swapMe = new swap();
-                swapMe.blockOne = block3;
-                swapMe.blockTwo = block4;
-                swapMe.execute();
-            }
-        } catch (InterruptedException ex) {
-            
-        } catch (ExecutionException ex) {
-            
+            //System.out.println(SwingUtilities.isEventDispatchThread() + " done()");    for testing
         }
-        //System.out.println(SwingUtilities.isEventDispatchThread() + " done()");    for testing
-    }
-        
+
     }
 
     public boolean isValidMove(Block first, Block second, int tp, int btm) {
@@ -488,10 +659,17 @@ public class myFrame extends javax.swing.JFrame {
         int top = tp;
         int bottom = btm;
         if (first.isLeft() == second.isLeft()) {
-            if (first.getIsFrac() != second.getIsFrac()) {
+            if (first.getImAVariable() || second.getImAVariable()) {
                 valid = false;
             } else {
-                valid = true;
+                if (jLabelOperator.getText() == "/" || jLabelOperator2.getText() == "/") {
+                    valid = false;
+                } /*else if (jLabelOperator.getText() == "*" || jLabelOperator2.getText() == "*") {
+                    valid = false;
+                } */ else {
+                    valid = true;
+                }
+
             }
         } else if (first.isLeft() != second.isLeft()) {
             if (!block4.isVisible() || !block3.isVisible()) {
@@ -499,13 +677,38 @@ public class myFrame extends javax.swing.JFrame {
                     valid = false;
                 } else {
                     if (first.imAVariable) {
-                        if (operation == 3 && first.getMyPosition() == 2) {
-                            valid = true;
+                        if (operation == 3 && first.getMyPosition() == positionTwo) {
+                            if (jLabelOperator.getText() == "x") {
+                                valid = false;
+                            } else {
+                                valid = true;
+                            }
                         } else {
                             valid = false;
                         }
                     } else {
-                        valid = true;
+                        if (jLabelOperator.getText() == "/" || jLabelOperator.getText() == "x") {
+                            if (first.getMyPosition() == positionOne) {
+                                if (top == 1) {
+                                    if (block2.imAVariable && jLabelOperator.getText() == "/") {
+                                        valid = false;
+                                    } else {
+                                        valid = true;
+                                    }
+                                } else if (top == 2) {
+                                    if (block1.imAVariable && jLabelOperator.getText() == "/") {
+                                        valid = false;
+                                    } else {
+                                        valid = true;
+                                    }
+                                }
+                            } else {
+                                valid = true;
+                            }
+                        } else {
+                            valid = true;
+                        }
+
                     }
                 }
 
@@ -515,12 +718,36 @@ public class myFrame extends javax.swing.JFrame {
                 } else {
                     if (first.imAVariable) {
                         if (operation2 == 3 && first.getMyPosition() == 4) {
-                            valid = true;
+                            if (jLabelOperator2.getText() == "x") {
+                                valid = false;
+                            } else {
+                                valid = true;
+                            }
                         } else {
                             valid = false;
                         }
                     } else {
-                        valid = true;
+                        if (jLabelOperator2.getText() == "/" || jLabelOperator2.getText() == "x") {
+                            if (first.getMyPosition() == positionThree) {
+                                if (top == 3) {
+                                    if (block4.imAVariable && jLabelOperator2.getText() == "/") {
+                                        valid = false;
+                                    } else {
+                                        valid = true;
+                                    }
+                                } else if (top == 4) {
+                                    if (block3.imAVariable && jLabelOperator2.getText() == "/") {
+                                        valid = false;
+                                    } else {
+                                        valid = true;
+                                    }
+                                }
+                            } else {
+                                valid = true;
+                            }
+                        } else {
+                            valid = true;
+                        }
                     }
                 }
             }
@@ -529,49 +756,50 @@ public class myFrame extends javax.swing.JFrame {
         return valid;
     }
 
-     class swap extends SwingWorker <Void, Void> {
+    class swap extends SwingWorker<Void, Void> {
+
         protected Block blockOne;
         protected Block blockTwo;
-    
+
         @Override
         protected synchronized Void doInBackground() throws Exception {
             if (blockOne.getMyPosition() == positionOne) {
-            blockOne.setLocation(positionTwo, positionY);
-            blockOne.setMyPosition(positionTwo);
-            blockOne.setTempX(positionTwo);
-            blockOne.setTempY(positionY);
-            blockTwo.setLocation(positionOne, positionY);
-            blockTwo.setMyPosition(positionOne);
-            blockTwo.setTempX(positionOne);
-            blockTwo.setTempY(positionY);
-        } else if (blockOne.getMyPosition() == positionTwo) {
-            blockOne.setLocation(positionOne, positionY);
-            blockOne.setMyPosition(positionOne);
-            blockOne.setTempX(positionOne);
-            blockOne.setTempY(positionY);
-            blockTwo.setLocation(positionTwo, positionY);
-            blockTwo.setMyPosition(positionTwo);
-            blockTwo.setTempX(positionTwo);
-            blockTwo.setTempY(positionY);
-        } else if (blockOne.getMyPosition() == positionThree) {
-            blockOne.setLocation(positionFour, positionY);
-            blockOne.setMyPosition(positionFour);
-            blockOne.setTempX(positionFour);
-            blockOne.setTempY(positionY);
-            blockTwo.setLocation(positionThree, positionY);
-            blockTwo.setMyPosition(positionThree);
-            blockTwo.setTempX(positionThree);
-            blockTwo.setTempY(positionY);
-        } else if (blockOne.getMyPosition() == positionFour) {
-            blockOne.setLocation(positionThree, positionY);
-            blockOne.setMyPosition(positionThree);
-            blockOne.setTempX(positionThree);
-            blockOne.setTempY(positionY);
-            blockTwo.setLocation(positionFour, positionY);
-            blockTwo.setMyPosition(positionFour);
-            blockTwo.setTempX(positionFour);
-            blockTwo.setTempY(positionY);
-        }
+                blockOne.setLocation(positionTwo, positionY);
+                blockOne.setMyPosition(positionTwo);
+                blockOne.setTempX(positionTwo);
+                blockOne.setTempY(positionY);
+                blockTwo.setLocation(positionOne, positionY);
+                blockTwo.setMyPosition(positionOne);
+                blockTwo.setTempX(positionOne);
+                blockTwo.setTempY(positionY);
+            } else if (blockOne.getMyPosition() == positionTwo) {
+                blockOne.setLocation(positionOne, positionY);
+                blockOne.setMyPosition(positionOne);
+                blockOne.setTempX(positionOne);
+                blockOne.setTempY(positionY);
+                blockTwo.setLocation(positionTwo, positionY);
+                blockTwo.setMyPosition(positionTwo);
+                blockTwo.setTempX(positionTwo);
+                blockTwo.setTempY(positionY);
+            } else if (blockOne.getMyPosition() == positionThree) {
+                blockOne.setLocation(positionFour, positionY);
+                blockOne.setMyPosition(positionFour);
+                blockOne.setTempX(positionFour);
+                blockOne.setTempY(positionY);
+                blockTwo.setLocation(positionThree, positionY);
+                blockTwo.setMyPosition(positionThree);
+                blockTwo.setTempX(positionThree);
+                blockTwo.setTempY(positionY);
+            } else if (blockOne.getMyPosition() == positionFour) {
+                blockOne.setLocation(positionThree, positionY);
+                blockOne.setMyPosition(positionThree);
+                blockOne.setTempX(positionThree);
+                blockOne.setTempY(positionY);
+                blockTwo.setLocation(positionFour, positionY);
+                blockTwo.setMyPosition(positionFour);
+                blockTwo.setTempX(positionFour);
+                blockTwo.setTempY(positionY);
+            }
             return null;
         }
     }
@@ -606,12 +834,12 @@ public class myFrame extends javax.swing.JFrame {
         return nd;
     }
 
-    public static String fraction() {
+    public static synchronized String fraction() {
         String value = "";
         return value;
     }
 
-    public static int add(String sNum1, String sNum2) {
+    public static synchronized int add(String sNum1, String sNum2) {
         int value = 0;
         int num1 = 0;
         int num2 = 0;
@@ -621,7 +849,7 @@ public class myFrame extends javax.swing.JFrame {
         return value;
     }
 
-    public static int multiply(String sNum1, String sNum2) {
+    public static synchronized int multiply(String sNum1, String sNum2) {
         int value = 0;
         int num1 = 0;
         int num2 = 0;
@@ -631,14 +859,6 @@ public class myFrame extends javax.swing.JFrame {
         return value;
     }
 
-    /* public static String divide(String sNum1, String sNum2) {
-        String value = "";
-        String deNum = sNum1;
-        String nuNum = sNum2;
-        //boolean isDeci2 = false;
-        value = deNum + "/" + nuNum;
-        return value;
-    }*/
     public synchronized void reset() {
         theOperation = "";
         theOperation2 = "";
@@ -711,6 +931,8 @@ public class myFrame extends javax.swing.JFrame {
         String sNum;
         boolean valid = true;
         int denom = 1;
+        int varA = 0;
+        int varB = 0;
 
         if (variable == 0) {
             try {                                       // checks for integers
@@ -726,11 +948,16 @@ public class myFrame extends javax.swing.JFrame {
                         sNum = Character.toString(inputB1[i]);
                         num = Integer.parseInt(sNum);
                         coefficient++;
+                        if (aFrac == 1) {
+                            coefficient = 0;
+                        }
                     } catch (NumberFormatException ex) {
                         variable++;
+                        varA++;
                         if (inputB1[i] == '/') {
                             aFrac++;
                             variable--;
+                            varA--;
                         }
 
                     }
@@ -757,12 +984,13 @@ public class myFrame extends javax.swing.JFrame {
                     } else {
                         valid = false;
                     }
-                    if (coefficient == 0) {
+                    if (coefficient == 0 && varA == 1) {
                         block1.setImAVariable(true);
                         block1.setMyVariableValue(textFieldB1.getText());
-                    } else {
-                        valid = false;
                     }
+                    /*else {
+                        valid = false;
+                    }*/
 
                 }
 
@@ -779,11 +1007,16 @@ public class myFrame extends javax.swing.JFrame {
                         sNum = Character.toString(inputB2[i]);
                         num = Integer.parseInt(sNum);
                         coefficient++;
+                        if (bFrac == 1) {
+                            coefficient = 0;
+                        }
                     } catch (NumberFormatException ex) {
                         variable++;
+                        varB++;
                         if (inputB2[i] == '/') {
                             bFrac++;
                             variable--;
+                            varB--;
                         }
                     }
                 }
@@ -808,12 +1041,13 @@ public class myFrame extends javax.swing.JFrame {
                     } else {
                         valid = false;
                     }
-                    if (coefficient == 0) {
+                    if (coefficient == 0 && varB == 1) {
                         block2.setImAVariable(true);
                         block2.setMyVariableValue(textFieldB2.getText());
-                    } else {
-                        valid = false;
                     }
+                    /*else {
+                        valid = false;
+                    }*/
 
                 }
 
@@ -1306,11 +1540,22 @@ public class myFrame extends javax.swing.JFrame {
     private void block1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block1MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block1.getBounds().intersects(block2.getBounds())) {
-                //swap(block1, block2);
-                swapMe = new swap();
-                swapMe.blockOne = block1;
-                swapMe.blockTwo = block2;
-                swapMe.execute();
+                validMove = isValidMove(block1, block2, block1.getBlockNum(), block2.getBlockNum());
+                if (validMove) {
+                    merge(block1, block2);
+                } else {
+                    if (jLabelOperator.getText() != "/") {
+                        //swap(block1, block2);
+                        swapMe = new swap();
+                        swapMe.blockOne = block1;
+                        swapMe.blockTwo = block2;
+                        swapMe.execute();
+                    } else {
+                        block1.setLocation(block1.getTempX(), block1.getTempY());
+                        JOptionPane.showMessageDialog(null, "Invalid move!");
+                    }
+                }
+
                 //JOptionPane.showMessageDialog(null, "merge between block1 and block2!"); for testing
             } else if (block1.getBounds().intersects(block3.getBounds())) {
                 validMove = isValidMove(block1, block3, block1.getBlockNum(), block3.getBlockNum());
@@ -1324,7 +1569,7 @@ public class myFrame extends javax.swing.JFrame {
                     moveMe.execute();
                 } else {
                     block1.setLocation(block1.getTempX(), block1.getTempY());
-                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                    //JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
                 }
 
             } else if (block1.getBounds().intersects(block4.getBounds())) {
@@ -1339,7 +1584,7 @@ public class myFrame extends javax.swing.JFrame {
                     moveMe.execute();
                 } else {
                     block1.setLocation(block1.getTempX(), block1.getTempY());
-                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                    JOptionPane.showMessageDialog(null, "Invalid move!");
                 }
 
                 //JOptionPane.showMessageDialog(null, "merge between block1 and block4!"); for testing
@@ -1356,11 +1601,22 @@ public class myFrame extends javax.swing.JFrame {
     private void block2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block2MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block2.getBounds().intersects(block1.getBounds())) {
-                //swap(block2, block1);
-                swapMe = new swap();
-                swapMe.blockOne = block2;
-                swapMe.blockTwo = block1;
-                swapMe.execute();
+                validMove = isValidMove(block2, block1, block2.getBlockNum(), block1.getBlockNum());
+                if (validMove) {
+                    merge(block2, block1);
+                } else {
+                    if (jLabelOperator.getText() != "/") {
+                        //swap(block2, block1);
+                        swapMe = new swap();
+                        swapMe.blockOne = block2;
+                        swapMe.blockTwo = block1;
+                        swapMe.execute();
+                    } else {
+                        block2.setLocation(block2.getTempX(), block2.getTempY());
+                        JOptionPane.showMessageDialog(null, "Invalid move!");
+                    }
+
+                }
                 //JOptionPane.showMessageDialog(null, "merge between block2 and block1!"); for testing
             } else if (block2.getBounds().intersects(block3.getBounds())) {
                 validMove = isValidMove(block2, block3, block2.getBlockNum(), block3.getBlockNum());
@@ -1373,11 +1629,11 @@ public class myFrame extends javax.swing.JFrame {
                     moveMe.sOperation = theOperation;
                     moveMe.sOperation2 = theOperation2;
                     moveMe.execute();
-                   // System.out.println(SwingUtilities.isEventDispatchThread() + " keyreleased");    for testing
-                    
+                    // System.out.println(SwingUtilities.isEventDispatchThread() + " keyreleased");    for testing
+
                 } else {
                     block2.setLocation(block2.getTempX(), block2.getTempY());
-                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                    JOptionPane.showMessageDialog(null, "Invalid move!");
                 }
                 //JOptionPane.showMessageDialog(null, "merge between block2 and block3!"); for testing
             } else if (block2.getBounds().intersects(block4.getBounds())) {
@@ -1392,7 +1648,7 @@ public class myFrame extends javax.swing.JFrame {
                     moveMe.execute();
                 } else {
                     block2.setLocation(block2.getTempX(), block2.getTempY());
-                    JOptionPane.showMessageDialog(null, "Don't move the variable, keep it isolated!");
+                    JOptionPane.showMessageDialog(null, "Invalid move!");
                 }
                 //JOptionPane.showMessageDialog(null, "merge between block2 and block4!"); for testing
             } else {
@@ -1438,12 +1694,22 @@ public class myFrame extends javax.swing.JFrame {
                 }
                 //JOptionPane.showMessageDialog(null, "merge between block3 and block1!"); for testing
             } else if (block3.getBounds().intersects(block4.getBounds())) {
-                //swap(block3, block4);
-                swapMe = new swap();
-                swapMe.blockOne = block3;
-                swapMe.blockTwo = block4;
-                swapMe.execute();
-                //JOptionPane.showMessageDialog(null, "merge between block3 and block4!"); for testing
+                validMove = isValidMove(block3, block4, block3.getBlockNum(), block4.getBlockNum());
+                if (validMove) {
+                    merge(block3, block4);
+                } else {
+                    if (jLabelOperator2.getText() != "/") {
+                        //swap(block3, block4);
+                        swapMe = new swap();
+                        swapMe.blockOne = block3;
+                        swapMe.blockTwo = block4;
+                        swapMe.execute();
+                    } else {
+                        block3.setLocation(block3.getTempX(), block3.getTempY());
+                        JOptionPane.showMessageDialog(null, "Invalid move!");
+                    }
+                    //JOptionPane.showMessageDialog(null, "merge between block3 and block4!"); for testing
+                }
             } else {
                 block3.setLocation(block3.getTempX(), block3.getTempY());
                 JOptionPane.showMessageDialog(null, "block3 resets when it is dragged out of its allowed boundary!");
@@ -1470,12 +1736,23 @@ public class myFrame extends javax.swing.JFrame {
     private void block4MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_block4MouseReleased
         if (operation == 1 || operation == 2 || operation == 3) {
             if (block4.getBounds().intersects(block3.getBounds())) {
-                //swap(block4, block3);
-                swapMe = new swap();
-                swapMe.blockOne = block4;
-                swapMe.blockTwo = block3;
-                swapMe.execute();
-                //JOptionPane.showMessageDialog(null, "merge between block4 and block3!"); for testing
+                validMove = isValidMove(block4, block3, block4.getBlockNum(), block3.getBlockNum());
+                if (validMove) {
+                    merge(block4, block3);
+                } else {
+                    if (jLabelOperator2.getText() != "/") {
+                        //swap(block4, block3);
+                        swapMe = new swap();
+                        swapMe.blockOne = block4;
+                        swapMe.blockTwo = block3;
+                        swapMe.execute();
+                        //JOptionPane.showMessageDialog(null, "merge between block4 and block3!"); for testing
+                    } else {
+                        block4.setLocation(block4.getTempX(), block4.getTempY());
+                        JOptionPane.showMessageDialog(null, "Invalid move!");
+                    }
+                }
+
             } else if (block4.getBounds().intersects(block2.getBounds())) {
                 validMove = isValidMove(block4, block2, block4.getBlockNum(), block2.getBlockNum());
                 if (validMove) {
@@ -1586,6 +1863,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             } else if (block1.isFrac == true && block2.isFrac == false) {
                                 Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
                                 Fraction result = first.add(Integer.parseInt(textFieldB2.getText()));
@@ -1594,6 +1874,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             } else if (block1.isFrac == false && block2.isFrac == true) {
                                 Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
                                 Fraction result = two.add(Integer.parseInt(textFieldB1.getText()));
@@ -1602,6 +1885,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             }
                         } else {
                             jLabelB1.setText(textFieldB1.getText());
@@ -1623,6 +1909,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             } else if (block1.isFrac == true && block2.isFrac == false) {
                                 Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
                                 Fraction result = first.multiply(Integer.parseInt(textFieldB2.getText()));
@@ -1631,6 +1920,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             } else if (block1.isFrac == false && block2.isFrac == true) {
                                 Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
                                 Fraction result = two.multiply(Integer.parseInt(textFieldB1.getText()));
@@ -1639,6 +1931,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             }
                         } else {
                             jLabelB1.setText(textFieldB1.getText());
@@ -1658,6 +1953,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             } else if (block1.isFrac == true && block2.isFrac == false) {
                                 Fraction first = new Fraction(block1.getNumerator(), block1.getDenominator());
                                 Fraction result = first.divide(Integer.parseInt(textFieldB2.getText()));
@@ -1666,6 +1964,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             } else if (block1.isFrac == false && block2.isFrac == true) {
                                 Fraction two = new Fraction(block2.getNumerator(), block2.getDenominator());
                                 Fraction one = new Fraction(Integer.parseInt(textFieldB1.getText()), 1);
@@ -1675,6 +1976,9 @@ public class myFrame extends javax.swing.JFrame {
                                 jLabelB1.setText(textFieldB1.getText());
                                 jLabelB2.setText(textFieldB2.getText());
                                 jLabelB3.setText(value);
+                                block3.setIsFrac(true);
+                                block3.setNumerator(result.getNumerator());
+                                block3.setDenominator(result.getDenominator());
                             }
                         } else {
                             Fraction divide = new Fraction(Integer.parseInt(textFieldB1.getText()), Integer.parseInt(textFieldB2.getText()));
