@@ -752,6 +752,23 @@ public class myFrame extends javax.swing.JFrame {
                 }
             }
         }
+        int invCount = 0;
+        if (!block1.isVisible()) {
+            invCount++;
+        }
+        if (!block2.isVisible()) {
+            invCount++;
+        }
+        if (!block3.isVisible()) {
+            invCount++;
+        }
+        if (!block4.isVisible()) {
+            invCount++;
+        }
+        if (invCount > 1) {
+            valid = false;
+            JOptionPane.showMessageDialog(null, "End of equation, please click on the reset button!");
+        }
 
         return valid;
     }
@@ -860,6 +877,7 @@ public class myFrame extends javax.swing.JFrame {
     }
 
     public synchronized void reset() {
+        coefficient = 0;
         theOperation = "";
         theOperation2 = "";
         block1.setMyVariableValue("");
@@ -1127,6 +1145,8 @@ public class myFrame extends javax.swing.JFrame {
         jButtonEnter = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
         jLabelByGroup3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algebra Blocks");
@@ -1203,12 +1223,12 @@ public class myFrame extends javax.swing.JFrame {
         block1.setLayout(block1Layout);
         block1Layout.setHorizontalGroup(
             block1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabelB1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+            .addComponent(jLabelB1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
         );
         block1Layout.setVerticalGroup(
             block1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, block1Layout.createSequentialGroup()
-                .addContainerGap(36, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabelB1)
                 .addGap(36, 36, 36))
         );
@@ -1294,7 +1314,7 @@ public class myFrame extends javax.swing.JFrame {
         blockEqualsSign.setOpaque(false);
 
         jLabelEqualSign.setBackground(new java.awt.Color(0, 0, 0));
-        jLabelEqualSign.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabelEqualSign.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabelEqualSign.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelEqualSign.setText("=");
         jLabelEqualSign.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1324,7 +1344,7 @@ public class myFrame extends javax.swing.JFrame {
         blockOperatorSign.setOpaque(false);
 
         jLabelOperator.setBackground(new java.awt.Color(0, 0, 0));
-        jLabelOperator.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabelOperator.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabelOperator.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelOperator.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabelOperator.setMaximumSize(new java.awt.Dimension(94, 40));
@@ -1354,7 +1374,7 @@ public class myFrame extends javax.swing.JFrame {
         blockOperatorSign2.setOpaque(false);
 
         jLabelOperator2.setBackground(new java.awt.Color(0, 0, 0));
-        jLabelOperator2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabelOperator2.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabelOperator2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelOperator2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabelOperator2.setMaximumSize(new java.awt.Dimension(94, 40));
@@ -1450,6 +1470,24 @@ public class myFrame extends javax.swing.JFrame {
 
         jLabelByGroup3.setText("By: group 3");
         getContentPane().add(jLabelByGroup3, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 390, -1, -1));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jorg3\\Desktop\\School\\CSUN\\CompSci 380\\images\\math-chalk board.jpg")); // NOI18N
+        jLabel1.setText("jLabel1");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 960, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 410));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -2065,6 +2103,7 @@ public class myFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBoxAdd;
     private javax.swing.JCheckBox jCheckBoxDivide;
     private javax.swing.JCheckBox jCheckBoxMultiply;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelB1;
     private javax.swing.JLabel jLabelB2;
     private javax.swing.JLabel jLabelB3;
@@ -2073,6 +2112,7 @@ public class myFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelEqualSign;
     private javax.swing.JLabel jLabelOperator;
     private javax.swing.JLabel jLabelOperator2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private java.awt.TextField textFieldB1;
     private java.awt.TextField textFieldB2;
